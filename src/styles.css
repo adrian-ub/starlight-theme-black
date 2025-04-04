@@ -5,6 +5,9 @@
   --radius: 0.5rem;
 
   --sl-color-text-accent: hsl(var(--primary));
+
+  --code-background: 240, 6%, 10%;
+  --mark-background: 240deg 5.26% 26.08% / 50%;
 }
 
 :root[data-theme='dark'] {

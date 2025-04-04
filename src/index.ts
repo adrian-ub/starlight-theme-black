@@ -66,7 +66,35 @@ export default function starlightThemeBlack(userConfig: StarlightThemeBlackUserC
             starlightConfig.expressiveCode === false
               ? false
               : {
-                  themes: ['github-dark-default', 'github-light-default'],
+                  styleOverrides: {
+                    codeBackground: 'hsl(var(--code-background))',
+                    borderColor: 'hsl(var(--code-background))',
+                    borderRadius: '0.75rem',
+                    textMarkers: {
+                      markBackground: 'hsl(var(--mark-background))',
+                      markBorderColor: 'transparent',
+                      backgroundOpacity: '0.4',
+                      delBorderColor: 'transparent',
+                      insBorderColor: 'transparent',
+                    },
+                    frames: {
+                      editorBackground: 'hsl(var(--code-background))',
+                      editorTabBarBackground: 'hsl(var(--code-background))',
+                      editorTabBarBorderBottomColor: 'hsl(var(--border))',
+                      editorTabBarBorderColor: 'hsl(var(--code-background))',
+                      editorActiveTabBackground: 'hsl(var(--code-background))',
+                      editorActiveTabBorderColor: 'hsl(var(--code-background))',
+                      editorActiveTabIndicatorTopColor: 'hsl(var(--code-background))',
+                      editorActiveTabIndicatorBottomColor: 'hsl(var(--primary))',
+                      tooltipSuccessBackground: 'hsl(var(--input))',
+                      tooltipSuccessForeground: 'hsl(var(--input-foreground))',
+                      frameBoxShadowCssValue: 'unset',
+                      terminalBackground: 'hsl(var(--code-background))',
+                      terminalTitlebarBackground: 'hsl(var(--code-background))',
+                      terminalTitlebarBorderBottomColor: 'hsl(var(--border))',
+                    },
+                  },
+                  themes: ['github-dark-default', 'github-light'],
                   ...(typeof starlightConfig.expressiveCode === 'object' ? starlightConfig.expressiveCode : {}),
                 },
         })
