@@ -5,9 +5,6 @@
   --radius: 0.5rem;
 
   --sl-color-text-accent: hsl(var(--primary));
-
-  --code-background: 240, 6%, 10%;
-  --mark-background: 240deg 5.26% 26.08% / 50%;
 }
 
 :root[data-theme='dark'] {
@@ -30,6 +27,8 @@
   --border: 240 3.7% 15.9%;
   --input: 240 3.7% 15.9%;
   --ring: 240 4.9% 83.9%;
+  --code-background: 240 6% 10%;
+  --mark-background: 240 5.26% 26.08% / 50%;
 }
 
 :root[data-theme='light'] {
@@ -52,6 +51,8 @@
   --border: 240 5.9% 90%;
   --input: 240 5.9% 90%;
   --ring: 240 5% 64.9%;
+  --code-background: 0 0% 100%;
+  --mark-background: 0 0% 100% / 1%;
 }
 
 * {

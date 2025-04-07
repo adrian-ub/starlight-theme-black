@@ -68,7 +68,7 @@ export default function starlightThemeBlack(userConfig: StarlightThemeBlackUserC
               : {
                   styleOverrides: {
                     codeBackground: 'hsl(var(--code-background))',
-                    borderColor: 'hsl(var(--code-background))',
+                    borderColor: 'hsl(var(--border))',
                     borderRadius: '0.75rem',
                     textMarkers: {
                       markBackground: 'hsl(var(--mark-background))',
@@ -81,11 +81,11 @@ export default function starlightThemeBlack(userConfig: StarlightThemeBlackUserC
                       editorBackground: 'hsl(var(--code-background))',
                       editorTabBarBackground: 'hsl(var(--code-background))',
                       editorTabBarBorderBottomColor: 'hsl(var(--border))',
-                      editorTabBarBorderColor: 'hsl(var(--code-background))',
+                      editorTabBarBorderColor: 'hsl(var(--border))',
                       editorActiveTabBackground: 'hsl(var(--code-background))',
-                      editorActiveTabBorderColor: 'hsl(var(--code-background))',
+                      editorActiveTabBorderColor: 'hsl(var(--border))',
                       editorActiveTabIndicatorTopColor: 'hsl(var(--code-background))',
-                      editorActiveTabIndicatorBottomColor: 'hsl(var(--primary))',
+                      editorActiveTabIndicatorBottomColor: 'hsl(var(--code-background))',
                       tooltipSuccessBackground: 'hsl(var(--input))',
                       tooltipSuccessForeground: 'hsl(var(--input-foreground))',
                       frameBoxShadowCssValue: 'unset',
