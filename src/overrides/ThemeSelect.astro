@@ -1,14 +1,18 @@
 ---
+import crypto from 'node:crypto'
 
+const id = `moon-mask-${crypto.randomBytes(4).toString('hex')}`
+
+// https://web.dev/building-a-theme-switch-component/
+// https://github.com/withastro/starlight/blob/9237581c766f68fbb3ce5f9401ca2046f106c7d5/packages/starlight/components/ThemeSelect.astro
 ---
 
-<starlight-theme-black-select>
+<starlight-black-theme-select>
   <button
     aria-label={Astro.locals.t('themeSelect.accessibleLabel')}
     aria-live="polite"
-    class="sl-flex button"
+    class="sl-flex"
     title={Astro.locals.t('themeSelect.accessibleLabel')}
-    data-variant="ghost"
   >
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -20,7 +24,7 @@
       stroke-width="2"
       stroke-linecap="round"
       stroke-linejoin="round"
-      class="sun"
+      class="icon-dark"
     >
       <circle cx="12" cy="12" r="4"></circle>
       <path d="M12 2v2"></path>
@@ -43,28 +47,51 @@
       stroke-width="2"
       stroke-linecap="round"
       stroke-linejoin="round"
-      class="moon"
-      ><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"> </path>
+      class="icon-light"
+    >
+      <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
     </svg>
-
-    <span class="sr-only">Toggle theme</span>
   </button>
-</starlight-theme-black-select>
+</starlight-black-theme-select>
 
 <style>
-  svg {
-    flex-shrink: 0;
-    width: 1rem;
-    height: 1rem;
-    pointer-events: none;
-  }
+  @layer black {
+    .icon-light,
+    .icon-dark {
+      display: none;
+      width: 1rem;
+      height: 1rem;
+    }
 
-  :global([data-theme='light']) svg.sun {
-    display: none;
-  }
+    :root[data-theme='light'] .icon-light,
+    :root[data-theme='auto'] .icon-light {
+      display: inline;
+    }
+    :root[data-theme='dark'] .icon-dark {
+      display: inline;
+    }
 
-  :global([data-theme='dark']) svg.moon {
-    display: none;
+    button {
+      align-items: center;
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+      padding-top: 0.5rem;
+      padding-bottom: 0.5rem;
+      padding-left: 0;
+      padding-right: 0;
+      border-radius: calc(0.5rem - 2px);
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      width: 2rem;
+      height: 2rem;
+    }
+
+    button:hover {
+      color: var(--accent-foreground);
+      background-color: var(--accent);
+    }
   }
 </style>
 
@@ -104,26 +131,24 @@
   /** Update select menu UI, document theme, and local storage state. */
   function onThemeChange(theme: Theme): void {
     StarlightThemeProvider.updatePickers(theme)
-    document.documentElement.dataset.theme = theme === 'auto' ? getPreferredColorScheme() : theme
+    document.documentElement.dataset['theme'] = theme === 'auto' ? getPreferredColorScheme() : theme
     storeTheme(theme)
   }
 
   // React to changes in system color scheme.
   matchMedia(`(prefers-color-scheme: light)`).addEventListener('change', () => {
-    if (loadTheme() === 'auto') {
-      onThemeChange('auto')
-    }
+    if (loadTheme() === 'auto') onThemeChange('auto')
   })
 
   customElements.define(
-    'starlight-theme-black-select',
-    class StarlightThemeBlackSelect extends HTMLElement {
+    'starlight-black-theme-select',
+    class StarlightRapideThemeSelect extends HTMLElement {
       constructor() {
         super()
         onThemeChange(loadTheme())
         const button = this.querySelector('button')
         button?.addEventListener('click', () => {
-          const theme = parseTheme(document.documentElement.dataset.theme)
+          const theme = parseTheme(document.documentElement.dataset['theme'])
           const newTheme = theme === 'dark' ? 'light' : theme === 'light' ? 'dark' : 'auto'
           onThemeChange(newTheme)
           button?.setAttribute('aria-label', `${newTheme} theme`)
