@@ -1,10 +1,9 @@
-import adrianub from '@adrianub/eslint-config'
+import antfu from '@antfu/eslint-config'
 
-export default adrianub({
-  type: 'lib',
+export default antfu({
   formatters: true,
   astro: false,
-  typescript: {
-    tsconfigPath: './tsconfig.json',
-  },
+  ignores: [
+    'packages/starlight-theme-black/**/*.d.ts',
+  ],
 })

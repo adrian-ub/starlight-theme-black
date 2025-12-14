@@ -1,0 +1,54 @@
+{
+  "name": "starlight-theme-black",
+  "type": "module",
+  "version": "0.6.0",
+  "description": "Starlight theme inspired by Shadcn docs",
+  "author": "adrian-ub",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "funding": "https://github.com/sponsors/adrian-ub",
+  "homepage": "https://github.com/adrian-ub/starlight-theme-black",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adrian-ub/starlight-theme-black.git",
+    "directory": "packages/starlight-theme-black"
+  },
+  "bugs": "https://github.com/adrian-ub/starlight-theme-black/issues",
+  "exports": {
+    ".": "./index.ts",
+    "./styles/base": "./styles/base.css",
+    "./styles/layers": "./styles/layers.css",
+    "./styles/theme": "./styles/theme.css",
+    "./schema": "./schema.ts",
+    "./components": "./user-components.ts",
+    "./overrides/ThemeSelect.astro": "./overrides/ThemeSelect.astro",
+    "./overrides/PageFrame.astro": "./overrides/PageFrame.astro",
+    "./overrides/Header.astro": "./overrides/Header.astro",
+    "./overrides/SiteTitle.astro": "./overrides/SiteTitle.astro",
+    "./overrides/Sidebar.astro": "./overrides/Sidebar.astro",
+    "./overrides/TwoColumnContent.astro": "./overrides/TwoColumnContent.astro",
+    "./overrides/ContentPanel.astro": "./overrides/ContentPanel.astro",
+    "./overrides/PageTitle.astro": "./overrides/PageTitle.astro",
+    "./overrides/MarkdownContent.astro": "./overrides/MarkdownContent.astro",
+    "./overrides/Hero.astro": "./overrides/Hero.astro",
+    "./overrides/Footer.astro": "./overrides/Footer.astro",
+    "./overrides/SocialIcons.astro": "./overrides/SocialIcons.astro",
+    "./overrides/Pagination.astro": "./overrides/Pagination.astro",
+    "./overrides/Search.astro": "./overrides/Search.astro",
+    "./overrides/TableOfContents.astro": "./overrides/TableOfContents.astro",
+    "./overrides/PageSidebar.astro": "./overrides/PageSidebar.astro",
+    "./package.json": "./package.json"
+  },
+  "engines": {
+    "node": "^18.17.1 || ^20.3.0 || >=21.0.0"
+  },
+  "peerDependencies": {
+    "@astrojs/starlight": ">=0.37"
+  },
+  "dependencies": {
+    "@pagefind/default-ui": "^1.4.0",
+    "marked": "^17.0.1"
+  }
+}

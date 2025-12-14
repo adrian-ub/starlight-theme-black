@@ -1,8 +1,21 @@
 {
-  "name": "docs",
+  "name": "starlight-theme-black-docs",
   "type": "module",
   "version": "0.0.1",
   "private": true,
+  "description": "Starlight theme inspired by Shadcn docs",
+  "author": "adrian-ub",
+  "license": "MIT",
+  "homepage": "https://github.com/adrian-ub/starlight-theme-black",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adrian-ub/starlight-theme-black.git",
+    "directory": "docs"
+  },
+  "bugs": "https://github.com/adrian-ub/starlight-theme-black/issues",
+  "engines": {
+    "node": "^18.17.1 || ^20.3.0 || >=21.0.0"
+  },
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
@@ -11,15 +24,11 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/starlight": "^0.34.1",
-    "@astrojs/starlight-tailwind": "^4.0.1",
-    "@tailwindcss/vite": "^4.1.4",
-    "astro": "^5.7.5",
-    "sharp": "^0.32.5",
-    "starlight-theme-black": "workspace:*",
-    "tailwindcss": "^4.1.4"
-  },
-  "devDependencies": {
-    "fast-glob": "^3.3.3"
+    "@astrojs/starlight": "^0.37.1",
+    "@fontsource/geist-mono": "^5.2.7",
+    "@fontsource/geist-sans": "^5.2.5",
+    "astro": "^5.16.5",
+    "sharp": "^0.34.5",
+    "starlight-theme-black": "workspace:*"
   }
 }

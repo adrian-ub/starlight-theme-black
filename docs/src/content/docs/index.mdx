@@ -1,9 +1,17 @@
 ---
-title: Starlight Black
+title: starlight-theme-black
 description: Starlight theme inspired by Shadcn docs
 head:
   - tag: title
     content: starlight-theme-black
+  - tag: style
+    content: |
+      .hero-html {
+        --size: 12rem;
+        font-size: var(--size);
+        justify-content: center;
+        line-height: var(--size);
+      }
 template: splash
 editUrl: false
 hero:
@@ -11,16 +19,14 @@ hero:
   actions:
     - text: Get Started
       link: /getting-started/
-    - text: Browse Starlight
-      link: https://starlight.astro.build/
+      icon: right-arrow
+    - text: Examples
+      link: /examples/kitchen-sink/
+      icon: right-arrow
       variant: minimal
-      attrs:
-        target: _blank
-        rel: noopener noreferrer
 ---
 
 import { Card, CardGrid } from '@astrojs/starlight/components'
-
 import { ContainerSection } from 'starlight-theme-black/components'
 
 <ContainerSection>
@@ -28,11 +34,17 @@ import { ContainerSection } from 'starlight-theme-black/components'
 ## Next steps
 
 <CardGrid stagger>
-  <Card title="Install the plugin" icon="puzzle">
+  <Card title="Install the theme" icon="puzzle">
     Check the [getting started guide](/getting-started/) for installation instructions.
   </Card>
-  <Card title="Configure the plugin" icon="setting">
+  <Card title="Configure the theme" icon="setting">
     Edit your config in the `astro.config.mjs` file.
+  </Card>
+  <Card title="Preview the theme" icon="seti:image">
+    Check out the [example pages](/examples/kitchen-sink/) to see the theme in action.
+  </Card>
+  <Card title="Read the docs" icon="open-book">
+    Learn more in the [`starlight-theme-black` documentation](/getting-started/).
   </Card>
 </CardGrid>
 

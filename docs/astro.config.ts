@@ -1,20 +1,9 @@
 import starlight from '@astrojs/starlight'
-import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'astro/config'
-
 import starlightThemeBlack from 'starlight-theme-black'
-import { devServerFileWatcher } from './config/integrations/dev-server-file-watcher'
 
-// https://astro.build/config
 export default defineConfig({
-  site: 'https://starlight-theme-black.vercel.app/',
-
   integrations: [
-    devServerFileWatcher([
-      '../package.json',
-      '../src/**/*.ts',
-      '../src/**/*.json',
-    ]),
     starlight({
       logo: {
         dark: './src/assets/logo-dark.svg',
@@ -24,9 +13,6 @@ export default defineConfig({
       editLink: {
         baseUrl: 'https://github.com/adrian-ub/starlight-theme-black/edit/main/docs/',
       },
-      customCss: [
-        './src/styles/global.css',
-      ],
       plugins: [
         starlightThemeBlack({
           navLinks: [
@@ -49,24 +35,14 @@ export default defineConfig({
       sidebar: [
         {
           label: 'Start Here',
-          items: [
-            { slug: 'getting-started' },
-            { slug: 'customization', badge: 'New' },
-          ],
+          items: ['getting-started', 'customization'],
         },
-        {
-          label: 'Examples',
-          autogenerate: { directory: 'examples' },
-        },
+        { label: 'Examples', autogenerate: { directory: 'examples' } },
       ],
       social: [
-        { icon: 'github', label: 'GitHub', href: 'https://github.com/adrian-ub/starlight-theme-black' },
+        { href: 'https://github.com/adrian-ub/starlight-theme-black', icon: 'github', label: 'GitHub' },
       ],
       title: 'starlight/black',
     }),
   ],
-
-  vite: {
-    plugins: [tailwindcss()],
-  },
 })
