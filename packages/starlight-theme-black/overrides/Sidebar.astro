@@ -5,6 +5,7 @@ const { sidebar } = Astro.locals.starlightRoute
 ---
 
 <div class="sidebar">
+  <div class="sidebar-border-gradient"></div>
   <div class="sidebar-spacer"></div>
   <div class="sidebar-fade-top"></div>
   <div class="container-sidebar">
@@ -28,6 +29,23 @@ const { sidebar } = Astro.locals.starlightRoute
   .sidebar-spacer {
     height: 2.25rem;
     flex-shrink: 0;
+  }
+
+  .sidebar-border-gradient {
+    position: absolute;
+    top: 0rem;
+    right: 0.5rem;
+    bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, transparent 0%, var(--border) 50%, transparent 100%);
+    display: none;
+    z-index: 1;
+  }
+
+  @media (min-width: 1024px) {
+    .sidebar-border-gradient {
+      display: flex;
+    }
   }
 
   .sidebar-fade-top {
