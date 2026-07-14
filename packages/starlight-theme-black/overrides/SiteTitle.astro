@@ -10,7 +10,7 @@ const { siteTitle, siteTitleHref } = Astro.locals.starlightRoute
     config.logo && logos.dark && (
       <>
         <img
-          class:list={[{ 'light:sl-hidden': !('src' in config.logo) }, 'logo-size']}
+          class:list={[{ 'light:sl-hidden': !('src' in config.logo) }, 'logo']}
           alt={config.logo.alt}
           src={logos.dark.src}
           width={logos.dark.width}
@@ -19,7 +19,7 @@ const { siteTitle, siteTitleHref } = Astro.locals.starlightRoute
         {/* Show light alternate if a user configure both light and dark logos. */}
         {!('src' in config.logo) && (
           <img
-            class="dark:sl-hidden logo-size"
+            class="dark:sl-hidden logo"
             alt={config.logo.alt}
             src={logos.light?.src}
             width={logos.light?.width}
@@ -35,22 +35,16 @@ const { siteTitle, siteTitleHref } = Astro.locals.starlightRoute
 </a>
 
 <style>
-  .logo-size {
-    width: 1.5rem;
-    height: 1.5rem;
+  .logo {
+    max-height: 32px;
+    max-width: 32px;
   }
 
   .site-title {
     gap: 0.5rem;
     align-items: center;
     display: flex;
-    margin-right: 1rem;
-  }
-
-  @media (min-width: 1024px) {
-    .site-title {
-      margin-right: 1.5rem;
-    }
+    margin-right: calc(var(--spacing) * 3);
   }
 
   .title-text {

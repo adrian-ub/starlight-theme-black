@@ -10,19 +10,19 @@
     all: unset;
 
     display: inline-flex;
-    margin-right: 0.5rem;
-    margin-left: -0.5rem;
+    margin-right: calc(var(--spacing) * 2);
+    margin-left: calc(var(--spacing) * -2);
     height: 2rem;
     width: 2rem;
     align-items: center;
     justify-content: center;
-    padding-bottom: 0.5rem;
-    padding-top: 0.5rem;
+    padding-bottom: calc(var(--spacing) * 2);
+    padding-top: calc(var(--spacing) * 2);
     font-size: 1rem;
     line-height: 1.5rem;
   }
 
-  @media (min-width: 768px) {
+  @media (min-width: 1024px) {
     button {
       display: none;
     }

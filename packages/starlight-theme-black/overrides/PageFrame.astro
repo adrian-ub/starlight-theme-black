@@ -1,207 +1,121 @@
 ---
 import { marked } from 'marked'
-
 import userConfig from 'virtual:starlight-theme-black-config'
 import Drawer from '../components/Drawer.astro'
 
 const { hasSidebar } = Astro.locals.starlightRoute
 ---
 
-<div class="layout">
-  <div class="layout__grid">
-    <header class="layout__header">
-      <div class="container-wrapper">
-        <div class="container container__header">
-          <slot name="header" />
-        </div>
+<div data-slot="layout">
+  <header>
+    <div class="container-wrapper px-6">
+      <div class="container">
+        <slot name="header" />
       </div>
-    </header>
-    <main class="main">
-      {!hasSidebar && <slot />}
+    </div>
+  </header>
 
-      {
-        hasSidebar && (
-          <div class="container-wrapper">
-            <div class="container container-wrapper-main">
-              <aside class="aside">
-                <slot name="sidebar" />
-              </aside>
+  <main>
+    {!hasSidebar && <slot />}
 
-              <slot />
-            </div>
+    {
+      hasSidebar && (
+        <div class="container-wrapper">
+          <div class="container container-wrapper-main">
+            <aside class="aside">
+              <slot name="sidebar" />
+            </aside>
+
+            <slot />
           </div>
-        )
-      }
-    </main>
-    <footer class="footer">
-      <div class="container-wrapper">
-        <div class="container footer-container">
-          <div class="footer-text" set:html={marked.parseInline(userConfig.footerText)} />
         </div>
-      </div>
-    </footer>
-  </div>
-  <Drawer />
+      )
+    }
+  </main>
+
+  <footer>
+    <div data-slot="footer-text" set:html={marked.parseInline(userConfig.footerText)} />
+  </footer>
 </div>
 
+<Drawer />
+
 <style>
-  .layout {
-    background-color: var(--background);
+  [data-slot='layout'] {
+    /* group/layout relative z-10 flex min-h-svh flex-col bg-background */
+    position: relative;
+    z-index: 10;
     display: flex;
     flex-direction: column;
     min-height: 100svh;
-    position: relative;
-  }
+    background: var(--background);
 
-  .layout__grid {
-    border-color: color-mix(in oklab, var(--border) 30%, transparent);
-    display: flex;
-    flex-direction: column;
-    flex: 1 1 0%;
-  }
-
-  :global([data-theme='dark']) .layout__grid {
-    border-color: var(--border);
-  }
-
-  .layout__header {
-    background-color: color-mix(in oklab, var(--background) 60%, transparent);
-    border-color: color-mix(in oklab, var(--border) 30%, transparent);
-    border-bottom-width: 1px;
-    border-bottom-style: solid;
-    width: 100%;
-    z-index: 50;
-    top: 0;
-    position: sticky;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-  }
-
-  :global([data-theme='dark']) .layout__header {
-    border-color: var(--border);
-  }
-
-  .container__header {
-    display: flex;
-    align-items: center;
-    height: 3.5rem;
-  }
-
-  .main {
-    display: flex;
-    flex: 1 1 0%;
-    flex-direction: column;
-  }
-
-  .container-wrapper-main {
-    align-items: flex-start;
-    flex: 1 1 0%;
-  }
-
-  @media (min-width: 1024px) {
-    .container-wrapper-main {
-      gap: 2.5rem;
-      grid-template-columns: 240px minmax(0, 1fr);
-    }
-  }
-
-  @media (min-width: 768px) {
-    .container-wrapper-main {
-      gap: 1.5rem;
-      grid-template-columns: 220px minmax(0, 1fr);
-      display: grid;
-    }
-  }
-
-  .aside {
-    border-color: color-mix(in oklab, var(--border) 30%, transparent);
-    border-right-width: 1px;
-    border-right-style: solid;
-    flex-shrink: 0;
-    width: 100%;
-    height: calc(100vh - 3.5rem);
-    display: none;
-    z-index: 30;
-    top: 3.5rem;
-    position: fixed;
-  }
-
-  :global([data-theme='dark']) .aside {
-    border-color: var(--border);
-  }
-
-  @media (min-width: 768px) {
-    .aside {
-      display: block;
+    header {
+      /* sticky top-0 z-50 w-full bg-background */
       position: sticky;
+      top: 0;
+      z-index: 50;
+      width: 100%;
+      background: var(--background);
+
+      .container-wrapper {
+        padding-inline: calc(var(--spacing) * 6);
+
+        .container {
+          /* flex h-(--header-height) items-center **:data-[slot=separator]:h-4! group-has-data-[slot=designer]/layout:fixed:max-w-none 3xl:fixed:container */
+          display: flex;
+          height: var(--header-height);
+          align-items: center;
+          max-width: none;
+        }
+      }
     }
-  }
 
-  .footer {
-    border-color: color-mix(in oklab, var(--border) 30%, transparent);
-    padding-top: 1.5rem;
-    padding-bottom: 1.5rem;
-    border-top-width: 1px;
-    border-top-style: solid;
-  }
-
-  :global([data-theme='dark']) .footer {
-    border-color: var(--border);
-  }
-  @media (min-width: 768px) {
-    .footer {
-      padding-top: 0;
-      padding-bottom: 0;
-      padding-left: 2rem;
-      padding-right: 2rem;
+    > main {
+      /* flex min-h-0 flex-1 flex-col */
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
     }
-  }
 
-  .footer-container {
-    margin-left: auto;
-    margin-right: auto;
-    max-width: 1536px;
-    padding-left: 1rem;
-    padding-right: 1rem;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-  }
+    > footer {
+      border-top: none;
+      height: 6rem;
+      display: flex;
+      align-items: center;
 
-  @media (min-width: 1536px) {
-    .footer-container {
-      padding-left: 1rem;
-      padding-right: 1rem;
+      [data-slot='footer-text'] {
+        width: 100%;
+        max-width: var(--container-max-width);
+        margin-inline: auto;
+        padding-inline: calc(var(--spacing) * 6);
+        font-size: 0.875rem;
+        line-height: 1.25rem;
+        color: var(--muted-foreground);
+        text-wrap: balance;
+        text-align: center;
+      }
+
+      &:is(:where(body):has(*[data-slot='docs']) *) {
+        display: none;
+      }
+
+      &:is(:where(body):has(.docs-nav)) {
+        padding-bottom: calc(var(--spacing) * 20);
+
+        @media (min-width: 640px) {
+          padding-bottom: 0;
+        }
+      }
+
+      &:is(:where(body):has(.section-soft)) {
+        background: var(--surface-40);
+      }
+
+      &:is(:where(body):has(*[data-slot='designer']) *) {
+        display: none;
+      }
     }
-  }
-
-  @media (min-width: 1280px) {
-    .footer-container {
-      padding-left: 1.5rem;
-      padding-right: 1.5rem;
-    }
-  }
-
-  .footer-text {
-    color: var(--muted-foreground);
-    line-height: 2;
-    font-size: 0.875rem;
-    line-height: 1.25rem;
-    text-align: center;
-    text-wrap: balance;
-  }
-
-  @media (min-width: 768px) {
-    .footer-text {
-      text-align: left;
-    }
-  }
-</style>
-
-<style is:global>
-  .footer-text a {
-    text-underline-offset: 4px;
-    text-decoration-line: underline;
-    font-weight: 500;
-    color: inherit;
   }
 </style>

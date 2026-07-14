@@ -6,7 +6,7 @@ const { toc } = Astro.locals.starlightRoute
 
 {
   toc && (
-    <main class="container-main">
+    <main class="container-main" data-slot="docs">
       <div class="main">
         <slot />
       </div>
@@ -20,32 +20,46 @@ const { toc } = Astro.locals.starlightRoute
 
 <style>
   .container-main {
-    padding-top: 1.5rem;
-    padding-bottom: 1.5rem;
+    padding-top: calc(var(--spacing) * 2);
+    padding-bottom: calc(var(--spacing) * 6);
     position: relative;
-  }
-
-  @media (min-width: 1280px) {
-    .container-main {
-      grid-template-columns: 1fr 300px;
-      display: grid;
-    }
   }
 
   @media (min-width: 1024px) {
     .container-main {
-      padding-top: 2rem;
-      padding-bottom: 2rem;
+      padding-left: calc(var(--spacing) * 8);
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .container-main {
+      grid-template-columns: 1fr 240px;
+      display: grid;
       gap: 2.5rem;
+      padding-top: calc(var(--spacing) * 8);
+      padding-bottom: calc(var(--spacing) * 8);
     }
   }
 
   .main {
-    max-width: 42rem;
+    max-width: 40rem;
     min-width: 0;
     width: 100%;
-    margin-left: auto;
-    margin-right: auto;
+    margin-inline: auto;
+    padding-inline: calc(var(--spacing) * 4);
+    padding-top: calc(var(--spacing) * 4);
+
+    main {
+      display: flex;
+      flex-direction: column;
+      gap: calc(var(--spacing) * 6);
+    }
+  }
+
+  @media (min-width: 768px) {
+    .main {
+      padding-inline: 0;
+    }
   }
 
   .toc {

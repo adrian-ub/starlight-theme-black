@@ -2,7 +2,7 @@
 
 ---
 
-<starlight-theme-black-select>
+<starlight-theme-lucode-select>
   <button
     aria-label={Astro.locals.t('themeSelect.accessibleLabel')}
     aria-live="polite"
@@ -49,9 +49,28 @@
 
     <span class="sr-only">Toggle theme</span>
   </button>
-</starlight-theme-black-select>
+</starlight-theme-lucode-select>
 
 <style>
+  button {
+    all: unset;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: calc(var(--radius) - 2px);
+    cursor: pointer;
+    color: color-mix(in oklab, var(--foreground) 76%, var(--muted-foreground));
+    background-color: transparent;
+    transition:
+      color 0.15s,
+      background-color 0.15s;
+  }
+  button:hover {
+    color: var(--accent-foreground);
+    background-color: color-mix(in oklab, var(--accent) 80%, transparent);
+  }
   svg {
     flex-shrink: 0;
     width: 1rem;
@@ -85,12 +104,12 @@
     return theme === 'auto' || theme === 'dark' || theme === 'light' ? theme : 'auto'
   }
 
-  /** Load the user’s preference from `localStorage`. */
+  /** Load the user's preference from `localStorage`. */
   function loadTheme(): Theme {
     return parseTheme(typeof localStorage !== 'undefined' && localStorage.getItem(storageKey))
   }
 
-  /** Store the user’s preference in `localStorage`. */
+  /** Store the user's preference in `localStorage`. */
   function storeTheme(theme: Theme): void {
     if (typeof localStorage !== 'undefined') {
       localStorage.setItem(storageKey, theme === 'light' || theme === 'dark' ? theme : '')
@@ -117,8 +136,8 @@
   })
 
   customElements.define(
-    'starlight-theme-black-select',
-    class StarlightThemeBlackSelect extends HTMLElement {
+    'starlight-theme-lucode-select',
+    class StarlightThemeLucodeSelect extends HTMLElement {
       constructor() {
         super()
         onThemeChange(loadTheme())

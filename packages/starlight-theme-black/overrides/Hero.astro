@@ -1,24 +1,28 @@
 ---
+import { Icon } from '@astrojs/starlight/components'
 import { Image } from 'astro:assets'
+import { PAGE_TITLE_ID } from '../constants'
+import type { HeroLayout } from '../schema'
+import ContainerSection from '../components/ContainerSection.astro'
 import LinkButton from '../components/LinkButton.astro'
 
-import ContainerSection from '../components/ContainerSection.astro'
-import { PAGE_TITLE_ID } from '../constants'
-
 const { data } = Astro.locals.starlightRoute.entry
-const { title = data.title, tagline, image, actions = [] } = data.hero || {}
+const { title = data.title, tagline: heroTagline, image, actions = [] } = data.hero || {}
+const heroLayout = ((data.hero as any)?.layout as HeroLayout) ?? 'centered'
+const announcement = ((data.hero as any)?.announcement as { text: string; link: string }) ?? undefined
+const hasImage = !!image
+const tagline = heroTagline || data.description
 
 const imageAttrs = {
   loading: 'eager' as const,
   decoding: 'async' as const,
-  width: 400,
-  height: 400,
   alt: image?.alt || '',
 }
 
 let darkImage: ImageMetadata | undefined
 let lightImage: ImageMetadata | undefined
 let rawHtml: string | undefined
+
 if (image) {
   if ('file' in image) {
     darkImage = image.file
@@ -32,83 +36,205 @@ if (image) {
 ---
 
 <ContainerSection>
-  <div class="hero">
-    {darkImage && <Image src={darkImage} {...imageAttrs} class:list={{ 'light:sl-hidden': Boolean(lightImage) }} />}
-    {lightImage && <Image src={lightImage} {...imageAttrs} class="dark:sl-hidden" />}
-    {rawHtml && <div class="hero-html sl-flex" set:html={rawHtml} />}
-    <h1 class="title" id={PAGE_TITLE_ID} data-page-title set:html={title} />
-    {tagline && <div class="tagline" set:html={tagline} />}
+  <div class="hero" data-layout={heroLayout} data-has-image={hasImage ? '' : undefined}>
     {
-      actions.length > 0 && (
-        <div class="actions">
-          {actions.map(({ attrs: { class: className, ...attrs } = {}, icon, link: href, text, variant }) => (
-            <LinkButton {href} {variant} class:list={[className]} {...attrs}>
-              {text}
-              {icon?.html && <Fragment set:html={icon.html} />}
-            </LinkButton>
-          ))}
+      hasImage && (
+        <div class="hero-image">
+          {darkImage && (
+            <Image src={darkImage} {...imageAttrs} class:list={{ 'light:sl-hidden': Boolean(lightImage) }} />
+          )}
+          {lightImage && <Image src={lightImage} {...imageAttrs} class="dark:sl-hidden" />}
+          {rawHtml && <div class="hero-html sl-flex" set:html={rawHtml} />}
         </div>
       )
     }
+
+    <div class="hero-info">
+      <div class="hero-title-container">
+        {
+          announcement && (
+            <LinkButton href={announcement.link} variant="secondary" size="2xs">
+              {announcement.text}
+              <Icon name="right-arrow" size="16px" />
+            </LinkButton>
+          )
+        }
+
+        <h1 id={PAGE_TITLE_ID} data-page-title set:html={title} />
+      </div>
+
+      <div class="hero-content-container">
+        {tagline && <div class="tagline" set:html={tagline} />}
+
+        {
+          actions.length > 0 && (
+            <div class="actions">
+              {actions.map(({ attrs: { class: className, ...attrs } = {}, icon, link: href, text, variant }) => (
+                <LinkButton {href} {variant} class:list={[className]} {...attrs}>
+                  {text}
+                  {icon?.html && <Fragment set:html={icon.html} />}
+                </LinkButton>
+              ))}
+            </div>
+          )
+        }
+      </div>
+    </div>
   </div>
 </ContainerSection>
 
 <style>
   .hero {
-    padding-top: 2rem;
-    padding-bottom: 2rem;
     display: flex;
-    align-items: flex-start;
     flex-direction: column;
-    gap: 0.25rem;
-  }
-
-  @media (min-width: 1024px) {
-    .hero {
-      padding-top: 3rem;
-      padding-bottom: 3rem;
-    }
-  }
-  @media (min-width: 768px) {
-    .hero {
-      padding-top: 2.5rem;
-      padding-bottom: 2.5rem;
-    }
-  }
-
-  .title {
-    letter-spacing: -0.05em;
-    line-height: 1.25;
-    font-weight: 700;
-    font-size: 1.875rem;
-    line-height: 2.25rem;
-  }
-  @media (min-width: 1024px) {
-    .title {
-      line-height: 1.1;
-    }
-  }
-  @media (min-width: 768px) {
-    .title {
-      font-size: 2.25rem;
-      line-height: 2.5rem;
-    }
-  }
-
-  .tagline {
-    color: var(--foreground);
-    font-weight: 300;
-    font-size: 1.125rem;
-    line-height: 1.75rem;
-    max-width: 42rem;
-  }
-
-  .actions {
-    width: 100%;
-    padding-top: 0.5rem;
-    display: flex;
-    justify-content: flex-start;
     align-items: center;
-    gap: 0.5rem;
+    justify-content: center;
+    padding-block: calc(var(--spacing) * 20);
+    gap: calc(var(--spacing) * 12);
+  }
+
+  .hero-image {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .hero-image img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: attr(width) / attr(height);
+    border-radius: var(--radius);
+  }
+
+  .hero-info {
+    display: flex;
+    text-align: center;
+    align-items: center;
+    flex-direction: column;
+    gap: calc(var(--spacing) * 2);
+
+    @media (min-width: 768px) {
+      gap: calc(var(--spacing) * 4);
+    }
+  }
+
+  .hero-title-container {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing) * 2);
+    align-items: center;
+
+    h1 {
+      font-size: 1.875rem;
+      font-weight: 600;
+      line-height: 1.1;
+      text-wrap-style: balance;
+      letter-spacing: var(--spacing-tighter);
+    }
+
+    @media (min-width: 768px) {
+      gap: calc(var(--spacing) * 4);
+
+      h1 {
+        font-size: 3rem;
+      }
+    }
+  }
+
+  .hero-content-container {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing) * 2);
+
+    .tagline {
+      max-width: 56rem;
+      font-size: 1.125rem;
+      text-wrap: balance;
+      line-height: 1.75rem;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: center;
+      padding-top: calc(var(--spacing) * 2);
+      gap: calc(var(--spacing) * 2);
+    }
+
+    @media (min-width: 768px) {
+      gap: calc(var(--spacing) * 4);
+    }
+  }
+
+  /* layouts */
+
+  .hero[data-layout='centered-top'],
+  .hero[data-layout='banner'] {
+    flex-direction: column-reverse;
+    gap: calc(var(--spacing) * 20);
+    padding-block-end: calc(var(--spacing) * 8);
+  }
+
+  .hero[data-layout='banner'] {
+    @media (min-width: 1024px) {
+      .hero-info {
+        width: 100%;
+        flex-direction: row;
+        gap: calc(var(--spacing) * 16);
+
+        .hero-title-container {
+          flex: 1;
+          align-items: flex-start;
+          text-align: left;
+
+          h1 {
+            text-wrap-style: pretty;
+          }
+        }
+
+        .hero-content-container {
+          flex: 1;
+          align-items: flex-start;
+          align-self: flex-end;
+          text-align: left;
+
+          .tagline {
+            text-wrap-style: pretty;
+          }
+        }
+      }
+    }
+  }
+
+  .hero[data-layout='split-left'],
+  .hero[data-layout='split-right'] {
+    flex-direction: column;
+
+    .hero-image {
+      order: 0;
+    }
+
+    @media (min-width: 1024px) {
+      flex-direction: row;
+      gap: calc(var(--spacing) * 16);
+
+      .hero-info {
+        align-items: flex-start;
+
+        .hero-title-container {
+          align-items: flex-start;
+          text-align: left;
+        }
+
+        .hero-content-container {
+          align-items: flex-start;
+          text-align: left;
+        }
+      }
+    }
+  }
+
+  .hero[data-layout='split-left'] {
+    .hero-image {
+      order: 1;
+    }
   }
 </style>

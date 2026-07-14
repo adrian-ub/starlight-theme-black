@@ -5,31 +5,107 @@ const { sidebar } = Astro.locals.starlightRoute
 ---
 
 <div class="sidebar">
+  <div class="sidebar-border-gradient"></div>
+  <div class="sidebar-spacer"></div>
+  <div class="sidebar-fade-top"></div>
   <div class="container-sidebar">
-    <SidebarSublist sublist={sidebar} />
+    <div class="sidebar-entries">
+      <SidebarSublist sublist={sidebar} />
+    </div>
+    <div class="sidebar-fade-bottom"></div>
   </div>
 </div>
 
 <style>
   .sidebar {
     scrollbar-width: none;
-    padding-right: 1rem;
-    padding-top: 1.5rem;
-    padding-bottom: 1.5rem;
-    overflow: auto;
+    overflow: hidden;
     height: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar-spacer {
+    height: 2.25rem;
+    flex-shrink: 0;
+  }
+
+  .sidebar-border-gradient {
+    position: absolute;
+    top: 0rem;
+    right: 0.5rem;
+    bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, transparent 0%, var(--border) 50%, transparent 100%);
+    display: none;
+    z-index: 1;
   }
 
   @media (min-width: 1024px) {
-    .sidebar {
-      padding-top: 2rem;
-      padding-bottom: 2rem;
+    .sidebar-border-gradient {
+      display: flex;
     }
   }
 
+  .sidebar-fade-top {
+    position: absolute;
+    top: 2rem;
+    left: 0;
+    z-index: 10;
+    height: 2rem;
+    width: calc(100% - 1rem);
+    flex-shrink: 0;
+    pointer-events: none;
+    background-image: linear-gradient(
+      to bottom,
+      var(--background) 0%,
+      color-mix(in srgb, var(--background) 80%, transparent) 50%,
+      color-mix(in srgb, var(--background) 50%, transparent) 100%
+    );
+    filter: blur(2px);
+  }
+
+  .sidebar-fade-bottom {
+    position: sticky;
+    bottom: -2px;
+    z-index: 10;
+    height: 4rem;
+    flex-shrink: 0;
+    margin-top: calc(var(--spacing) * -16);
+    pointer-events: none;
+    background-image: linear-gradient(
+      to top,
+      var(--background) 0%,
+      color-mix(in srgb, var(--background) 80%, transparent) 50%,
+      color-mix(in srgb, var(--background) 50%, transparent) 100%
+    );
+    filter: blur(2px);
+  }
+
   .container-sidebar {
-    gap: 1.5rem;
     flex-direction: column;
     display: flex;
+    overflow: auto;
+    scrollbar-width: none;
+    flex: 1;
+    min-height: 0;
+    padding-top: calc(var(--spacing) * 6);
+    padding-right: calc(var(--spacing) * 6);
+    padding-left: calc(var(--spacing) * 2);
+    margin: 0 2rem;
+  }
+
+  .sidebar-entries {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing) * 6);
+    padding-bottom: calc(var(--spacing) * 16);
+  }
+
+  @media (min-width: 1024px) {
+    .container-sidebar {
+      max-height: calc(100svh - 10rem - 2.25rem);
+    }
   }
 </style>
