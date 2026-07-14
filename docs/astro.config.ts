@@ -17,6 +17,10 @@ export default defineConfig({
         starlightThemeBlack({
           navLinks: [
             {
+              label: 'Home',
+              link: '/',
+            },
+            {
               label: 'Docs',
               link: '/getting-started',
             },

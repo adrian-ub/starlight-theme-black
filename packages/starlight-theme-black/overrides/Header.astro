@@ -5,7 +5,6 @@ import SocialIcons from './SocialIcons.astro'
 import LanguageSelect from '@astrojs/starlight/components/LanguageSelect.astro'
 
 import ThemeSelect from './ThemeSelect.astro'
-import SiteTitle from './SiteTitle.astro'
 import NavBar from '../components/NavBar.astro'
 import MobileMenuToggle from './MobileMenuToggle.astro'
 
@@ -15,10 +14,7 @@ const shouldRenderSearch = config.pagefind || config.components.Search !== '@ast
 
 <MobileMenuToggle />
 
-<div class="site-title-wrapper">
-  <SiteTitle />
-  <NavBar />
-</div>
+<NavBar />
 
 <div class="header-right">
   {shouldRenderSearch && <Search />}
@@ -37,17 +33,6 @@ const shouldRenderSearch = config.pagefind || config.components.Search !== '@ast
 </div>
 
 <style>
-  .site-title-wrapper {
-    display: none;
-    margin-right: calc(var(--spacing) * 4);
-  }
-
-  @media (min-width: 768px) {
-    .site-title-wrapper {
-      display: flex;
-    }
-  }
-
   .header-right {
     gap: 0.5rem;
     justify-content: space-between;

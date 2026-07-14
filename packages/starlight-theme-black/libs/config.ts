@@ -18,6 +18,12 @@ const navLinkSchema = z.object({
 
 export const StarlightThemeBlackConfigSchema = z.object({
   navLinks: z.array(navLinkSchema).optional(),
+  docs: z
+    .object({
+      includeAiUtilities: z.boolean().default(true),
+    })
+    .optional()
+    .default({}),
   footerText: z.string().optional().default('Built & designed by [shadcn](https://twitter.com/shadcn). Ported to Astro Starlight by [Adrián UB](https://github.com/adrian-ub). The source code is available on [GitHub](https://github.com/adrian-ub/starlight-theme-black).'),
 })
 

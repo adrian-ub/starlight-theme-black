@@ -42,7 +42,7 @@ export function getTranslation(translations: Record<string, string>, link: strin
       return (
         <a class:list={[{ active: currentPath === link }]} href={link} {...nav.attrs}>
           {label}
-          {nav.badge && <span class="badge">{nav.badge}</span>}
+          {nav.badge && <span class="new-dot" />}
         </a>
       )
     })
@@ -76,6 +76,7 @@ export function getTranslation(translations: Record<string, string>, link: strin
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     transition-duration: 0.15s;
     color: var(--foreground);
+    position: relative;
   }
 
   .nav-bar a:hover {
@@ -83,19 +84,12 @@ export function getTranslation(translations: Record<string, string>, link: strin
     background-color: color-mix(in oklab, var(--accent) 80%, transparent);
   }
 
-  .badge {
-    padding-top: calc(var(--spacing) * 0.5);
-    padding-bottom: calc(var(--spacing) * 0.5);
-    padding-left: calc(var(--spacing) * 1.5);
-    padding-right: calc(var(--spacing) * 1.5);
-    margin-left: calc(var(--spacing) * 2);
-    border-radius: 0.375rem;
-    font-size: 0.75rem;
-    line-height: 1rem;
-    font-weight: 400;
-    line-height: 1;
-    text-decoration: none;
-    background: #adfa1d;
-    color: #000000;
+  .new-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #3b82f6;
+    margin-left: calc(var(--spacing) * 1.5);
+    flex-shrink: 0;
   }
 </style>

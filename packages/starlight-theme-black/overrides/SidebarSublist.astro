@@ -20,7 +20,7 @@ const { sublist } = Astro.props
       >
         <span class="entry-link-inner">
           {entry.label}
-          {entry.badge && <span class="entry-badge">{entry.badge.text}</span>}
+          {entry.badge && <span class="entry-badge" />}
         </span>
       </a>
     ) : (
@@ -101,15 +101,11 @@ const { sublist } = Astro.props
   }
 
   .entry-badge {
-    color: rgb(0 0 0);
-    line-height: 1;
-    font-size: 0.75rem;
-    padding-top: calc(var(--spacing) * 0.5);
-    padding-bottom: calc(var(--spacing) * 0.5);
-    padding-left: calc(var(--spacing) * 1.5);
-    padding-right: calc(var(--spacing) * 1.5);
-    background-color: rgb(173 250 29);
-    border-radius: calc(var(--radius) - 2px);
-    margin-left: calc(var(--spacing) * 2);
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #3b82f6;
+    margin-left: calc(var(--spacing) * 1.5);
+    flex-shrink: 0;
   }
 </style>

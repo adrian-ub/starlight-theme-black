@@ -62,7 +62,6 @@ const { hasSidebar } = Astro.locals.starlightRoute
         padding-inline: calc(var(--spacing) * 6);
 
         .container {
-          /* flex h-(--header-height) items-center **:data-[slot=separator]:h-4! group-has-data-[slot=designer]/layout:fixed:max-w-none 3xl:fixed:container */
           display: flex;
           height: var(--header-height);
           align-items: center;
@@ -72,11 +71,29 @@ const { hasSidebar } = Astro.locals.starlightRoute
     }
 
     > main {
-      /* flex min-h-0 flex-1 flex-col */
       display: flex;
       flex-direction: column;
       flex: 1;
       min-height: 0;
+
+      .container-wrapper {
+        .container-wrapper-main {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 0;
+          max-width: none;
+          padding-inline: calc(var(--spacing) * 6);
+
+          @media (min-width: 1024px) {
+            grid-template-columns: calc(var(--spacing) * 72) minmax(0, 1fr);
+            gap: calc(var(--spacing) * 8);
+          }
+
+          .aside {
+            min-width: 0;
+          }
+        }
+      }
     }
 
     > footer {
