@@ -425,7 +425,7 @@
     padding: 0.875rem 1rem;
     border: 1px solid var(--aside-border);
     border-inline-start: 1px solid var(--aside-border);
-    border-radius: var(--radius);
+    border-radius: calc(var(--radius) * 1.8);
     background-color: var(--aside-background);
     color: var(--aside-content);
   }
