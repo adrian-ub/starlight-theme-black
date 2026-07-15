@@ -1,15 +1,10 @@
----
-// Mobile menu toggle with hamburger → X animation
-// Pattern from shadcn-ui: two absolute spans + rotation
----
-
 <button class="mobile-menu-toggle" popovertargetaction="toggle" popovertarget="mobile-nav" aria-expanded="false">
   <div class="hamburger">
     <span class="bar bar-1"></span>
     <span class="bar bar-2"></span>
   </div>
-  <span class="label">Menu</span>
-  <span class="sr-only">Toggle Menu</span>
+  <span class="label">{Astro.locals.t('menuButton.accessibleLabel')}</span>
+  <span class="sr-only">{Astro.locals.t('menuButton.accessibleLabel')}</span>
 </button>
 
 <style>

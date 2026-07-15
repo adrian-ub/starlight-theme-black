@@ -1,34 +1,23 @@
 ---
-import userConfig from 'virtual:starlight-theme-black-config'
-import { getTranslation } from './NavBar.astro'
-import { getRelativeLocaleUrl } from 'astro:i18n'
+import { getNavLinks } from '../libs/navbar'
 const { sidebar } = Astro.locals.starlightRoute
 
 const currentPath = Astro.url.pathname
+const navLinks = getNavLinks(Astro.currentLocale)
 ---
 
 <div popover="auto" id="mobile-nav">
   <div class="mobile-nav-content">
     <div class="mobile-nav-section">
-      <div class="mobile-nav-label">Menu</div>
+      <div class="mobile-nav-label">{Astro.locals.t('menuButton.accessibleLabel')}</div>
       <div class="mobile-nav-links">
         {
-          userConfig.navLinks?.map((nav) => {
-            const absoluteLinkRegex = /^https?:\/\//
-
-            const link =
-              !absoluteLinkRegex.test(nav.link) && Astro.currentLocale
-                ? getRelativeLocaleUrl(Astro.currentLocale, nav.link)
-                : nav.link
-            const label = typeof nav.label === 'string' ? nav.label : getTranslation(nav.label, nav.link, 'label')
-
-            return (
-              <a href={link} {...nav.attrs}>
-                {label}
-                {nav.badge && <span class="new-dot" />}
-              </a>
-            )
-          })
+          navLinks.map((nav) => (
+            <a href={nav.link} {...nav.attrs}>
+              {nav.label}
+              {nav.badge && <span class="new-dot" />}
+            </a>
+          ))
         }
       </div>
     </div>

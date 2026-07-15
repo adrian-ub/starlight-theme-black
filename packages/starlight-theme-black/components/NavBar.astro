@@ -1,51 +1,18 @@
 ---
-import { AstroError } from 'astro/errors'
-import userConfig from 'virtual:starlight-theme-black-config'
-import starlightConfig from 'virtual:starlight/user-config'
-import { getRelativeLocaleUrl } from 'astro:i18n'
+import { getNavLinks } from '../libs/navbar'
 
 const currentPath = Astro.url.pathname
-
-const defaultLang = starlightConfig.defaultLocale?.lang || starlightConfig.defaultLocale?.locale || 'en'
-
-export function getTranslation(translations: Record<string, string>, link: string, description: string) {
-  const defaultTranslation = translations[defaultLang]
-
-  if (!defaultTranslation) {
-    throw new AstroError(
-      `The ${description} for "${link}" must have a key for the default language "${defaultLang}".`,
-      'Update the Starlight config to include a topic label for the default language.',
-    )
-  }
-
-  let translation = defaultTranslation
-
-  if (Astro.currentLocale) {
-    translation = translations[Astro.currentLocale] ?? defaultTranslation
-  }
-
-  return translation
-}
+const navLinks = getNavLinks(Astro.currentLocale)
 ---
 
 <nav class="nav-bar">
   {
-    userConfig.navLinks?.map((nav) => {
-      const absoluteLinkRegex = /^https?:\/\//
-
-      const link =
-        !absoluteLinkRegex.test(nav.link) && Astro.currentLocale
-          ? getRelativeLocaleUrl(Astro.currentLocale, nav.link)
-          : nav.link
-      const label = typeof nav.label === 'string' ? nav.label : getTranslation(nav.label, nav.link, 'label')
-
-      return (
-        <a class:list={[{ active: currentPath === link }]} href={link} {...nav.attrs}>
-          {label}
-          {nav.badge && <span class="new-dot" />}
-        </a>
-      )
-    })
+    navLinks.map((nav) => (
+      <a class:list={[{ active: currentPath === nav.link }]} href={nav.link} {...nav.attrs}>
+        {nav.label}
+        {nav.badge && <span class="new-dot" />}
+      </a>
+    ))
   }
 </nav>
 
