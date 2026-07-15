@@ -2,27 +2,27 @@
 import { Icon } from '@astrojs/starlight/components'
 import { Image } from 'astro:assets'
 import { PAGE_TITLE_ID } from '../constants'
-import type { HeroLayout } from '../schema'
 import ContainerSection from '../components/ContainerSection.astro'
 import LinkButton from '../components/LinkButton.astro'
 
 const { data } = Astro.locals.starlightRoute.entry
 const { title = data.title, tagline: heroTagline, image, actions = [] } = data.hero || {}
-const heroLayout = ((data.hero as any)?.layout as HeroLayout) ?? 'centered'
-const announcement = ((data.hero as any)?.announcement as { text: string; link: string }) ?? undefined
+const heroLayout = data.hero?.layout || 'media-left'
+const announcement = data.hero?.announcement
 const hasImage = !!image
 const tagline = heroTagline || data.description
 
 const imageAttrs = {
   loading: 'eager' as const,
   decoding: 'async' as const,
+  width: 400,
+  height: 400,
   alt: image?.alt || '',
 }
 
 let darkImage: ImageMetadata | undefined
 let lightImage: ImageMetadata | undefined
 let rawHtml: string | undefined
-
 if (image) {
   if ('file' in image) {
     darkImage = image.file
@@ -37,17 +37,11 @@ if (image) {
 
 <ContainerSection>
   <div class="hero" data-layout={heroLayout} data-has-image={hasImage ? '' : undefined}>
-    {
-      hasImage && (
-        <div class="hero-image">
-          {darkImage && (
-            <Image src={darkImage} {...imageAttrs} class:list={{ 'light:sl-hidden': Boolean(lightImage) }} />
-          )}
-          {lightImage && <Image src={lightImage} {...imageAttrs} class="dark:sl-hidden" />}
-          {rawHtml && <div class="hero-html sl-flex" set:html={rawHtml} />}
-        </div>
-      )
-    }
+    <div class="hero-image">
+      {darkImage && <Image src={darkImage} {...imageAttrs} class:list={{ 'light:sl-hidden': Boolean(lightImage) }} />}
+      {lightImage && <Image src={lightImage} {...imageAttrs} class="dark:sl-hidden" />}
+      {rawHtml && <div class="hero-html sl-flex" set:html={rawHtml} />}
+    </div>
 
     <div class="hero-info">
       <div class="hero-title-container">
@@ -93,16 +87,12 @@ if (image) {
     gap: calc(var(--spacing) * 12);
   }
 
-  .hero-image {
-    max-width: 100%;
-    width: 100%;
-  }
-
-  .hero-image img {
-    width: 100%;
+  .hero > img,
+  .hero > .hero-html {
+    object-fit: contain;
+    width: min(70%, 20rem);
     height: auto;
-    aspect-ratio: attr(width) / attr(height);
-    border-radius: var(--radius);
+    margin-inline: auto;
   }
 
   .hero-info {
@@ -164,9 +154,7 @@ if (image) {
     }
   }
 
-  /* layouts */
-
-  .hero[data-layout='centered-top'],
+  .hero[data-layout='media-top'],
   .hero[data-layout='banner'] {
     flex-direction: column-reverse;
     gap: calc(var(--spacing) * 20);
@@ -204,13 +192,9 @@ if (image) {
     }
   }
 
-  .hero[data-layout='split-left'],
-  .hero[data-layout='split-right'] {
+  .hero[data-layout='media-left'],
+  .hero[data-layout='media-right'] {
     flex-direction: column;
-
-    .hero-image {
-      order: 0;
-    }
 
     @media (min-width: 1024px) {
       flex-direction: row;
@@ -232,9 +216,15 @@ if (image) {
     }
   }
 
-  .hero[data-layout='split-left'] {
+  .hero[data-layout='media-left'] {
     .hero-image {
       order: 1;
+    }
+  }
+
+  .hero[data-layout='media-right'] {
+    .hero-image {
+      order: 0;
     }
   }
 </style>
