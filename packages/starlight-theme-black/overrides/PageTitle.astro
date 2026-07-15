@@ -2,7 +2,6 @@
 import { Icon } from '@astrojs/starlight/components'
 import { PAGE_TITLE_ID } from '../constants'
 import userConfig from 'virtual:starlight-theme-black-config'
-import { Dropdown, DropdownContent, DropdownItem, DropdownTrigger } from '../components/custom/dropdown'
 
 import LinkButton from '../components/LinkButton.astro'
 const {
@@ -24,13 +23,14 @@ const aiServices = userConfig.docs.aiServices
   <div data-slot="doc-title-header">
     <h1 id={PAGE_TITLE_ID}>{title}</h1>
 
-    <div data-slot="doc-title-actions">
+    <div class="docs-nav">
       {
         includeAIMenu && (
-          <div style="display: flex; align-items: center; background-color: var(--secondary); border-radius: var(--radius);">
+          <div class="copy-page-group">
             <LinkButton
               class="copy-page-action"
               variant="secondary"
+              size="sm"
               data-content={`
 ---
 title: ${title}
@@ -55,48 +55,55 @@ ${body}`.trim()}
               Copy page
             </LinkButton>
             {aiServices.length > 0 && (
-              <Dropdown>
-                <DropdownTrigger variant="secondary" size="sm">
-                  <Icon name="down-caret" size="1rem" />
-                </DropdownTrigger>
-                <DropdownContent align="end">
-                  {aiServices.map((service) => (
-                    <DropdownItem
-                      as="a"
-                      href={service.url.replace(/\{prompt\}/g, encodedPrompt)}
-                      target="_blank"
-                      rel="noopener"
-                    >
-                      <Fragment set:html={service.icon} />
-                      {service.name}
-                    </DropdownItem>
-                  ))}
-                </DropdownContent>
-              </Dropdown>
+              <>
+                <div class="copy-page-separator" />
+                <div class="copy-page-dropdown">
+                  <button class="copy-page-dropdown-trigger" type="button" aria-expanded="false" aria-haspopup="true">
+                    <Icon name="down-caret" size="1rem" />
+                  </button>
+                  <div class="ai-services-menu" role="menu">
+                    <div class="ai-services-content">
+                      {aiServices.map((service) => (
+                        <a
+                          class="ai-service-item"
+                          href={service.url.replace(/\{prompt\}/g, encodedPrompt)}
+                          target="_blank"
+                          rel="noopener"
+                          role="menuitem"
+                        >
+                          <Fragment set:html={service.icon} />
+                          <span>{service.name}</span>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </>
             )}
           </div>
         )
       }
 
-      {
-        prev && (
-          <LinkButton size="icon-md" variant="secondary" href={prev.href}>
-            <Icon name="left-arrow" />
-          </LinkButton>
-        )
-      }
-
-      {
-        next && (
-          <LinkButton size="icon-md" variant="secondary" href={next.href}>
-            <Icon name="right-arrow" />
-          </LinkButton>
-        )
-      }
+      <div class="nav-buttons">
+        {
+          prev && (
+            <LinkButton size="icon-md" variant="secondary" href={prev.href}>
+              <Icon name="left-arrow" />
+            </LinkButton>
+          )
+        }
+        {
+          next && (
+            <LinkButton size="icon-md" variant="secondary" href={next.href}>
+              <Icon name="right-arrow" />
+            </LinkButton>
+          )
+        }
+      </div>
     </div>
   </div>
 
-  {description && <p slot="doc-title-description">{description}</p>}
+  {description && <p class="doc-title-description">{description}</p>}
 </div>
 
 <script>
@@ -116,6 +123,34 @@ ${body}`.trim()}
         }
       })
     })
+
+    document.querySelectorAll('.copy-page-dropdown').forEach((dropdown) => {
+      const trigger = dropdown.querySelector('.copy-page-dropdown-trigger') as HTMLButtonElement
+      const menu = dropdown.querySelector('.ai-services-menu') as HTMLElement
+      if (!trigger || !menu) return
+
+      trigger.addEventListener('click', (e) => {
+        e.stopPropagation()
+        const isOpen = menu.classList.contains('open')
+        menu.classList.toggle('open')
+        trigger.setAttribute('aria-expanded', String(!isOpen))
+      })
+
+      document.addEventListener('click', (e) => {
+        if (!dropdown.contains(e.target as Node)) {
+          menu.classList.remove('open')
+          trigger.setAttribute('aria-expanded', 'false')
+        }
+      })
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          menu.classList.remove('open')
+          trigger.setAttribute('aria-expanded', 'false')
+          trigger.focus()
+        }
+      })
+    })
   }
 
   initCopyPage()
@@ -123,7 +158,7 @@ ${body}`.trim()}
 </script>
 
 <style>
-  div[data-slot='doc-title'] {
+  [data-slot='doc-title'] {
     display: flex;
     flex-direction: column;
     gap: calc(var(--spacing) * 2);
@@ -135,8 +170,8 @@ ${body}`.trim()}
     justify-content: space-between;
     gap: calc(var(--spacing) * 2);
 
-    @media (min-width: 640px) {
-      align-items: start;
+    @media (min-width: 768px) {
+      align-items: flex-start;
     }
 
     h1 {
@@ -147,17 +182,127 @@ ${body}`.trim()}
       scroll-margin: 5rem;
       margin: 0;
       color: var(--foreground);
-    }
 
-    [data-slot='doc-title-actions'] {
-      position: relative;
-      display: flex;
-      align-items: center;
-      gap: calc(var(--spacing) * 2);
+      @media (min-width: 640px) {
+        font-size: 1.875rem;
+      }
     }
   }
 
-  [slot='doc-title-description'] {
+  .docs-nav {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--spacing) * 2);
+    flex-shrink: 0;
+  }
+
+  .copy-page-group {
+    position: relative;
+    display: none;
+    align-items: center;
+    gap: 0;
+    background-color: var(--secondary);
+    border-radius: var(--radius);
+
+    @media (min-width: 640px) {
+      display: flex;
+    }
+  }
+
+  .copy-page-separator {
+    width: 1px;
+    align-self: stretch;
+    margin: 0.25rem 0;
+    background-color: var(--border);
+  }
+
+  .copy-page-dropdown-trigger {
+    all: unset;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0 var(--radius) var(--radius) 0;
+    color: var(--foreground);
+    transition: background-color 0.15s;
+  }
+
+  .copy-page-dropdown-trigger:hover {
+    background-color: color-mix(in oklab, var(--accent) 80%, transparent);
+  }
+
+  .copy-page-dropdown {
+    position: relative;
+  }
+
+  .ai-services-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 0.25rem;
+    z-index: 50;
+    min-width: 12rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background-color: var(--popover-background, var(--background));
+    box-shadow: var(--shadow-md);
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.95);
+    transform-origin: top right;
+    transition:
+      opacity 100ms ease-out,
+      transform 100ms ease-out;
+  }
+
+  .ai-services-menu.open {
+    opacity: 1;
+    pointer-events: auto;
+    transform: scale(1);
+  }
+
+  .ai-services-content {
+    display: flex;
+    flex-direction: column;
+    padding: calc(var(--spacing) * 0.5);
+    gap: 0;
+  }
+
+  .ai-service-item {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--spacing) * 2);
+    padding: calc(var(--spacing) * 1.5) calc(var(--spacing) * 2);
+    border-radius: calc(var(--radius) * 0.75);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: var(--foreground);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color 100ms;
+
+    &:hover {
+      background-color: var(--accent);
+      color: var(--accent-foreground);
+    }
+
+    :global(svg) {
+      width: 1rem;
+      height: 1rem;
+      flex-shrink: 0;
+      color: var(--muted-foreground);
+    }
+  }
+
+  .nav-buttons {
+    display: flex;
+    gap: calc(var(--spacing) * 2);
+    margin-left: auto;
+  }
+
+  .doc-title-description {
     margin: 0;
     color: var(--muted-foreground);
     font-size: 1rem;
