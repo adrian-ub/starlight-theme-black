@@ -1,4 +1,9 @@
 @layer black {
+  :root:root {
+    --sl-font: 'Geist Sans';
+    --sl-font-mono: 'Geist Mono';
+  }
+
   :root[data-theme='dark'] {
     /* starlight gray scale */
     --foreground: oklch(98.5% 0 0); /* neutral-50 */
