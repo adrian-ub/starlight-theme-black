@@ -41,7 +41,10 @@ export default defineConfig({
           label: 'Start Here',
           items: ['getting-started', 'customization', 'ai-utilities'],
         },
-        { label: 'Examples', autogenerate: { directory: 'examples' } },
+        {
+          label: 'Examples',
+          items: [{ autogenerate: { directory: 'examples' } }],
+        },
       ],
       social: [
         { href: 'https://github.com/adrian-ub/starlight-theme-black', icon: 'github', label: 'GitHub' },

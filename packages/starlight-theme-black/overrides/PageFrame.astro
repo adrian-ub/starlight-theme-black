@@ -1,9 +1,11 @@
 ---
-import { marked } from 'marked'
+import { markdownToHtml } from 'satteri'
 import userConfig from 'virtual:starlight-theme-black-config'
 import Drawer from '../components/Drawer.astro'
 
 const { hasSidebar } = Astro.locals.starlightRoute
+
+const footerContent = markdownToHtml(userConfig.footerText, { features: { frontmatter: false, gfm: true } })
 ---
 
 <div data-slot="layout">
@@ -34,7 +36,7 @@ const { hasSidebar } = Astro.locals.starlightRoute
   </main>
 
   <footer>
-    <div data-slot="footer-text" set:html={marked.parseInline(userConfig.footerText)} />
+    <div data-slot="footer-text" set:html={footerContent.html} />
   </footer>
 </div>
 

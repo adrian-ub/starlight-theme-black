@@ -1,5 +1,4 @@
 ignoreWorkspaceRootCheck: true
-minimumReleaseAge: 4320
 shellEmulator: true
 
 packages:
