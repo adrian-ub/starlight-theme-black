@@ -20,25 +20,29 @@ const shouldRenderSearch = config.pagefind || config.components.Search !== '@ast
   {shouldRenderSearch && <Search />}
 
   <nav class="header-nav">
-    <div>
+    <div class="social-icons-wrapper">
       <SocialIcons />
     </div>
-    <div>
+    <div class="theme-select-wrapper">
       <ThemeSelect />
     </div>
-    <div>
-      <LanguageSelect />
-    </div>
+    {
+      config.isMultilingual && (
+        <div class="language-select-wrapper">
+          <LanguageSelect />
+        </div>
+      )
+    }
   </nav>
 </div>
 
 <style>
   .header-right {
     gap: 0.5rem;
-    justify-content: flex-end;
     align-items: center;
-    margin-left: auto;
+    flex: 1 0 0%;
     display: flex;
+    justify-content: flex-end;
   }
 
   .header-nav {
@@ -47,18 +51,18 @@ const shouldRenderSearch = config.pagefind || config.components.Search !== '@ast
     display: flex;
   }
 
-  .header-nav > div:has(> :not(script)) {
+  .header-nav > div {
     display: flex;
     align-items: center;
   }
 
-  .header-nav > div:has(> :not(script)) + div:has(> :not(script)) {
+  .header-nav > div + div {
     position: relative;
     margin-left: calc(var(--spacing) * 1);
     padding-left: calc(var(--spacing) * 3);
   }
 
-  .header-nav > div:has(> :not(script)) + div:has(> :not(script))::before {
+  .header-nav > div + div::before {
     content: '';
     position: absolute;
     top: 50%;

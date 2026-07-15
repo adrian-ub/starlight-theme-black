@@ -17,7 +17,7 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 <site-search class={Astro.props.class} {...dataAttributes}>
   <button data-open-modal disabled aria-label={Astro.locals.t('search.label')} aria-keyshortcuts="Control+K">
     <span aria-hidden="true">{Astro.locals.t('search.label')}</span>
-    <kbd class="sl-hidden md:sl-flex" style="display: none;">
+    <kbd class="search-kbd">
       <kbd>{Astro.locals.t('search.ctrlKey')}</kbd><kbd>K</kbd>
     </kbd>
   </button>
@@ -55,7 +55,7 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
 <script is:inline>
   ;(() => {
     const openBtn = document.querySelector('button[data-open-modal]')
-    const shortcut = openBtn?.querySelector('kbd')
+    const shortcut = openBtn?.querySelector('.search-kbd')
     if (!openBtn || !(shortcut instanceof HTMLElement)) {
       return
     }
@@ -65,7 +65,6 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
       platformKey.textContent = '⌘'
       openBtn.setAttribute('aria-keyshortcuts', 'Meta+K')
     }
-    shortcut.style.display = ''
   })()
 </script>
 
@@ -238,7 +237,7 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
     display: inline-flex;
   }
 
-  button > kbd {
+  .search-kbd {
     position: absolute;
     top: 0.3rem;
     right: 0.3rem;
@@ -259,7 +258,7 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
   }
 
   @media (min-width: 640px) {
-    button > kbd {
+    .search-kbd {
       display: flex;
     }
   }

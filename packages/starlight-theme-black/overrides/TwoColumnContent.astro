@@ -24,6 +24,12 @@ const { toc } = Astro.locals.starlightRoute
     position: relative;
   }
 
+  @media (min-width: 1024px) {
+    .container-main {
+      padding-left: calc(var(--spacing) * 8);
+    }
+  }
+
   @media (min-width: 1280px) {
     .container-main {
       grid-template-columns: 1fr 240px;

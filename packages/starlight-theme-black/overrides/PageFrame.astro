@@ -23,7 +23,7 @@ const footerContent = markdownToHtml(userConfig.footerText, { features: { frontm
     {
       hasSidebar && (
         <div class="container-wrapper">
-          <div class="container-wrapper-main">
+          <div class="container container-wrapper-main">
             <aside class="aside">
               <slot name="sidebar" />
             </aside>
@@ -83,12 +83,12 @@ const footerContent = markdownToHtml(userConfig.footerText, { features: { frontm
       }
 
       .container-wrapper-main {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 0;
+        display: flex;
+        flex-direction: column;
         max-width: none;
 
         @media (min-width: 1024px) {
+          display: grid;
           grid-template-columns: calc(var(--spacing) * 72) minmax(0, 1fr);
           gap: calc(var(--spacing) * 8);
         }

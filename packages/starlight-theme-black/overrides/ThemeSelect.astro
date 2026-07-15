@@ -78,8 +78,16 @@
     pointer-events: none;
   }
 
+  svg.moon {
+    display: none;
+  }
+
   :global([data-theme='light']) svg.sun {
     display: none;
+  }
+
+  :global([data-theme='light']) svg.moon {
+    display: block;
   }
 
   :global([data-theme='dark']) svg.moon {
