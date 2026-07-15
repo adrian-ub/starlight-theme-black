@@ -39,7 +39,7 @@ export default defineConfig({
       sidebar: [
         {
           label: 'Start Here',
-          items: ['getting-started', 'customization'],
+          items: ['getting-started', 'customization', 'ai-utilities'],
         },
         { label: 'Examples', autogenerate: { directory: 'examples' } },
       ],
