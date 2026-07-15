@@ -35,16 +35,10 @@ const shouldRenderSearch = config.pagefind || config.components.Search !== '@ast
 <style>
   .header-right {
     gap: 0.5rem;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
-    flex: 1 1 0%;
+    margin-left: auto;
     display: flex;
-  }
-
-  @media (min-width: 768px) {
-    .header-right {
-      justify-content: flex-end;
-    }
   }
 
   .header-nav {

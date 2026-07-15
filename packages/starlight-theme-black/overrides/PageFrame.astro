@@ -1,7 +1,7 @@
 ---
 import { markdownToHtml } from 'satteri'
 import userConfig from 'virtual:starlight-theme-black-config'
-import Drawer from '../components/Drawer.astro'
+import MobileNav from '../components/MobileNav.astro'
 
 const { hasSidebar } = Astro.locals.starlightRoute
 
@@ -40,7 +40,7 @@ const footerContent = markdownToHtml(userConfig.footerText, { features: { frontm
   </footer>
 </div>
 
-<Drawer />
+<MobileNav />
 
 <style>
   [data-slot='layout'] {
