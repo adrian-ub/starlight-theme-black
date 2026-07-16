@@ -86,11 +86,13 @@
   .container-wrapper-main {
     display: flex;
     flex-direction: column;
-    max-width: none;
+    max-width: 1024px;
   }
 
-  @media (min-width: 1024px) {
-    .container-wrapper-main {
+  .container-wrapper-main:has(> aside) {
+    max-width: none;
+
+    @media (min-width: 1024px) {
       display: grid;
       grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
     }

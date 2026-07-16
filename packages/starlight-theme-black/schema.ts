@@ -5,7 +5,7 @@ export const ExtendDocsSchema = z.object({
     .object({
       layout: z
         .enum(['centered', 'media-top', 'media-left', 'media-right', 'banner'])
-        .default('media-left'),
+        .default('centered'),
       announcement: z
         .object({
           text: z.string(),

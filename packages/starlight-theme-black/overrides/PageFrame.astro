@@ -18,21 +18,19 @@ const footerContent = markdownToHtml(userConfig.footerText, { features: { frontm
   </header>
 
   <main>
-    {!hasSidebar && <slot />}
-
-    {
-      hasSidebar && (
-        <div class="container-wrapper">
-          <div class="container container-wrapper-main">
+    <div class="container-wrapper">
+      <div class="container container-wrapper-main">
+        {
+          hasSidebar && (
             <aside class="aside">
               <slot name="sidebar" />
             </aside>
+          )
+        }
 
-            <slot />
-          </div>
-        </div>
-      )
-    }
+        <slot />
+      </div>
+    </div>
   </main>
 
   <footer>
@@ -85,12 +83,16 @@ const footerContent = markdownToHtml(userConfig.footerText, { features: { frontm
       .container-wrapper-main {
         display: flex;
         flex-direction: column;
-        max-width: none;
+        max-width: 1024px;
 
-        @media (min-width: 1024px) {
-          display: grid;
-          grid-template-columns: calc(var(--spacing) * 72) minmax(0, 1fr);
-          gap: calc(var(--spacing) * 8);
+        &:has(> aside) {
+          max-width: none;
+
+          @media (min-width: 1024px) {
+            display: grid;
+            grid-template-columns: calc(var(--spacing) * 72) minmax(0, 1fr);
+            gap: calc(var(--spacing) * 8);
+          }
         }
 
         .aside {
