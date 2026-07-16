@@ -154,6 +154,14 @@
     padding-inline-start: 0;
   }
 
+  footer > .meta {
+    flex-direction: column-reverse;
+  }
+
+  footer > .meta > :first-child {
+    margin-left: auto;
+  }
+
   .container-wrapper {
     width: 100%;
     padding-inline: calc(var(--spacing) * 2);
