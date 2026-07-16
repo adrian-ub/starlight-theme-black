@@ -1,12 +1,13 @@
 ---
 import { getNavLinks } from '../libs/navbar'
 const { sidebar } = Astro.locals.starlightRoute
+const { class: className } = Astro.props
 
 const currentPath = Astro.url.pathname
 const navLinks = getNavLinks(Astro.currentLocale)
 ---
 
-<div popover="auto" id="mobile-nav">
+<div class:list={[className]}>
   <div class="mobile-nav-content">
     <div class="mobile-nav-section">
       <div class="mobile-nav-label">{Astro.locals.t('menuButton.accessibleLabel')}</div>
@@ -46,29 +47,14 @@ const navLinks = getNavLinks(Astro.currentLocale)
 </div>
 
 <style>
-  [popover] {
+  div {
     padding: 0;
-    position: fixed;
-    top: var(--header-height);
-    left: 0;
-    width: 100vw;
-    height: calc(100vh - var(--header-height));
+    width: 100%;
+    height: 100%;
     display: flex;
-    opacity: 0;
-    pointer-events: none;
     flex-direction: column;
     justify-content: flex-start;
-    transition: opacity 100ms ease-out;
-    z-index: 100;
-    background: color-mix(in oklab, var(--background) 90%, transparent);
-    backdrop-filter: blur(8px);
-    border: none;
     overflow: hidden;
-  }
-
-  [popover]:popover-open {
-    opacity: 1;
-    pointer-events: auto;
   }
 
   .mobile-nav-content {
@@ -123,15 +109,3 @@ const navLinks = getNavLinks(Astro.currentLocale)
     flex-shrink: 0;
   }
 </style>
-
-<script>
-  const mobileNav = document.getElementById('mobile-nav')
-  if (mobileNav) {
-    mobileNav.addEventListener('toggle', (e) => {
-      const event = e as ToggleEvent
-      const isOpen = event.newState === 'open'
-      document.documentElement.style.overflow = isOpen ? 'hidden' : ''
-      document.body.style.overflow = isOpen ? 'hidden' : ''
-    })
-  }
-</script>

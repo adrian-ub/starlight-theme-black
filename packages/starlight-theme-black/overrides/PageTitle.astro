@@ -3,7 +3,6 @@ import { Icon } from '@astrojs/starlight/components'
 import { PAGE_TITLE_ID } from '../constants'
 import userConfig from 'virtual:starlight-theme-black-config'
 
-import LinkButton from '../components/LinkButton.astro'
 const {
   entry: { data, body },
   pagination: { prev, next },
@@ -17,6 +16,7 @@ const aiPromptTemplate = userConfig.docs.aiPrompt
 const aiPrompt = aiPromptTemplate.replace(/\{url\}/g, pageUrl)
 const encodedPrompt = encodeURIComponent(aiPrompt)
 const aiServices = userConfig.docs.aiServices
+const copyButtonContent = `---\ntitle: ${title}\ndescription: ${description}\n---\n\n${body}`.trim()
 ---
 
 <div data-slot="doc-title">
@@ -27,17 +27,7 @@ const aiServices = userConfig.docs.aiServices
       {
         includeAIMenu && (
           <div class="copy-page-group">
-            <LinkButton
-              class="copy-page-action"
-              variant="secondary"
-              size="sm"
-              data-content={`
----
-title: ${title}
-description: ${description}
----
-${body}`.trim()}
-            >
+            <button class="copy-page-action" data-content={copyButtonContent}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="15"
@@ -53,7 +43,7 @@ ${body}`.trim()}
                 <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
               </svg>
               Copy page
-            </LinkButton>
+            </button>
             {aiServices.length > 0 && (
               <>
                 <div class="copy-page-separator" />
@@ -87,16 +77,16 @@ ${body}`.trim()}
       <div class="nav-buttons">
         {
           prev && (
-            <LinkButton size="icon-md" variant="secondary" href={prev.href}>
+            <a href={prev.href}>
               <Icon name="left-arrow" />
-            </LinkButton>
+            </a>
           )
         }
         {
           next && (
-            <LinkButton size="icon-md" variant="secondary" href={next.href}>
+            <a href={next.href}>
               <Icon name="right-arrow" />
-            </LinkButton>
+            </a>
           )
         }
       </div>
@@ -158,6 +148,56 @@ ${body}`.trim()}
 </script>
 
 <style>
+  .copy-page-action,
+  .copy-page-dropdown-trigger {
+    all: unset;
+    display: inline-flex;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    shrink: 0;
+    gap: calc(var(--spacing) * 1.5);
+    justify-content: center;
+    align-items: center;
+    outline-style: none;
+    height: 2rem;
+    font-size: 0.875rem;
+    line-height: calc(1.25 / 0.875);
+    font-weight: 500;
+    white-space: nowrap;
+    padding-inline: calc(var(--spacing) * 2.5);
+    height: calc(var(--spacing) * 8);
+
+    color: var(--secondary-foreground);
+    white-space: nowrap;
+
+    @media (min-width: 48rem) {
+      font-size: 0.8rem;
+    }
+
+    @media (min-width: 48rem) {
+      height: calc(var(--spacing) * 7);
+    }
+  }
+
+  a {
+    color: var(--secondary-foreground);
+    text-decoration: inherit;
+    background-color: var(--secondary);
+    border-radius: calc(var(--radius) * 0.8);
+    justify-content: center;
+    gap: calc(var(--spacing) * 2);
+    align-items: center;
+    flex-shrink: 0;
+    display: inline-flex;
+    width: calc(var(--spacing) * 8);
+    height: calc(var(--spacing) * 8);
+
+    @media (min-width: 48rem) {
+      width: calc(var(--spacing) * 7);
+      height: calc(var(--spacing) * 7);
+    }
+  }
+
   [data-slot='doc-title'] {
     display: flex;
     flex-direction: column;
@@ -197,44 +237,17 @@ ${body}`.trim()}
   }
 
   .copy-page-group {
-    position: relative;
-    display: none;
-    align-items: center;
-    gap: 0;
     background-color: var(--secondary);
     border-radius: var(--radius);
-
-    @media (min-width: 640px) {
-      display: flex;
-    }
+    display: flex;
+    position: relative;
+    align-items: center;
   }
 
   .copy-page-separator {
     width: 1px;
-    align-self: stretch;
-    margin: 0.25rem 0;
+    height: 1rem;
     background-color: var(--border);
-  }
-
-  .copy-page-dropdown-trigger {
-    all: unset;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    width: 2rem;
-    height: 2rem;
-    border-radius: 0 var(--radius) var(--radius) 0;
-    color: var(--foreground);
-    transition: background-color 0.15s;
-  }
-
-  .copy-page-dropdown-trigger:hover {
-    background-color: color-mix(in oklab, var(--accent) 80%, transparent);
-  }
-
-  .copy-page-dropdown {
-    position: relative;
   }
 
   .ai-services-menu {

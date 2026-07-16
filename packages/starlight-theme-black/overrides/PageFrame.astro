@@ -1,7 +1,8 @@
 ---
+import MobileMenuToggle from './MobileMenuToggle.astro'
+import MobileNav from '../components/MobileNav.astro'
 import { markdownToHtml } from 'satteri'
 import userConfig from 'virtual:starlight-theme-black-config'
-import MobileNav from '../components/MobileNav.astro'
 
 const { hasSidebar } = Astro.locals.starlightRoute
 
@@ -10,134 +11,151 @@ const footerContent = markdownToHtml(userConfig.footerText, { features: { frontm
 
 <div data-slot="layout">
   <header>
-    <div class="container-wrapper px-6">
-      <div class="container">
-        <slot name="header" />
-      </div>
-    </div>
+    <slot name="header" />
   </header>
 
-  <main>
-    <div class="container-wrapper">
-      <div class="container container-wrapper-main">
-        {
-          hasSidebar && (
-            <aside class="aside">
-              <slot name="sidebar" />
-            </aside>
-          )
-        }
+  {
+    hasSidebar && (
+      <nav class="sidebar print:hidden">
+        <MobileMenuToggle />
+        <div id="starlight__sidebar" class="sidebar-pane">
+          <MobileNav class="mobile-sidebar" />
+          <div class="sidebar-content desktop-sidebar">
+            <slot name="sidebar" />
+          </div>
+        </div>
+      </nav>
+    )
+  }
 
-        <slot />
-      </div>
-    </div>
-  </main>
+  <div class="main-frame"><slot /></div>
 
   <footer>
     <div data-slot="footer-text" set:html={footerContent.html} />
   </footer>
 </div>
 
-<MobileNav />
-
 <style>
   [data-slot='layout'] {
-    /* group/layout relative z-10 flex min-h-svh flex-col bg-background */
     position: relative;
     z-index: 10;
     display: flex;
     flex-direction: column;
     min-height: 100svh;
     background: var(--background);
+  }
 
-    header {
-      /* sticky top-0 z-50 w-full bg-background */
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      width: 100%;
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    width: 100%;
+    background: var(--background);
+    padding-inline: calc(var(--spacing) * 6);
+    display: flex;
+    height: var(--header-height);
+    align-items: center;
+  }
+
+  .sidebar {
+    display: contents;
+  }
+
+  .sidebar-pane {
+    visibility: hidden;
+    position: fixed;
+    inset-block: var(--header-height) 0;
+    inset-inline-start: 0;
+    width: 100%;
+    z-index: 40;
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+    background: color-mix(in oklab, var(--background) 90%, transparent);
+    backdrop-filter: blur(8px);
+  }
+
+  .sidebar-pane[aria-expanded='true'] {
+    visibility: visible;
+  }
+
+  .mobile-sidebar {
+    display: block;
+  }
+
+  .desktop-sidebar {
+    display: none;
+  }
+
+  @media (min-width: 1024px) {
+    .sidebar-pane {
+      visibility: visible;
+      width: var(--sidebar-width);
       background: var(--background);
-
-      .container-wrapper {
-        padding-inline: calc(var(--spacing) * 6);
-
-        .container {
-          display: flex;
-          height: var(--header-height);
-          align-items: center;
-          max-width: none;
-        }
-      }
+      backdrop-filter: none;
     }
 
-    > main {
+    .mobile-sidebar {
+      display: none;
+    }
+
+    .desktop-sidebar {
       display: flex;
+      height: 100%;
+      min-height: max-content;
       flex-direction: column;
-      flex: 1;
-      min-height: 0;
+    }
 
-      .container-wrapper {
-        padding-inline: calc(var(--spacing) * 4);
-      }
+    .main-frame {
+      padding-inline-start: var(--sidebar-width);
+    }
+  }
 
-      .container-wrapper-main {
-        display: flex;
-        flex-direction: column;
-        max-width: 1024px;
+  .main-frame {
+    width: 100%;
+    max-width: 1024px;
+    margin-inline: auto;
+  }
 
-        &:has(> aside) {
-          max-width: none;
+  [data-slot='layout']:has(.sidebar) .main-frame {
+    max-width: none;
+  }
 
-          @media (min-width: 1024px) {
-            display: grid;
-            grid-template-columns: calc(var(--spacing) * 72) minmax(0, 1fr);
-            gap: calc(var(--spacing) * 8);
-          }
-        }
+  > footer {
+    border-top: none;
+    height: 6rem;
+    display: flex;
+    align-items: center;
 
-        .aside {
-          min-width: 0;
-        }
+    [data-slot='footer-text'] {
+      width: 100%;
+      max-width: var(--container-max-width);
+      margin-inline: auto;
+      padding-inline: calc(var(--spacing) * 6);
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+      color: var(--muted-foreground);
+      text-wrap: balance;
+      text-align: center;
+    }
+
+    &:is(:where(body):has(*[data-slot='docs']) *) {
+      display: none;
+    }
+
+    &:is(:where(body):has(.docs-nav)) {
+      padding-bottom: calc(var(--spacing) * 20);
+
+      @media (min-width: 640px) {
+        padding-bottom: 0;
       }
     }
 
-    > footer {
-      border-top: none;
-      height: 6rem;
-      display: flex;
-      align-items: center;
+    &:is(:where(body):has(.section-soft)) {
+      background: var(--surface-40);
+    }
 
-      [data-slot='footer-text'] {
-        width: 100%;
-        max-width: var(--container-max-width);
-        margin-inline: auto;
-        padding-inline: calc(var(--spacing) * 6);
-        font-size: 0.875rem;
-        line-height: 1.25rem;
-        color: var(--muted-foreground);
-        text-wrap: balance;
-        text-align: center;
-      }
-
-      &:is(:where(body):has(*[data-slot='docs']) *) {
-        display: none;
-      }
-
-      &:is(:where(body):has(.docs-nav)) {
-        padding-bottom: calc(var(--spacing) * 20);
-
-        @media (min-width: 640px) {
-          padding-bottom: 0;
-        }
-      }
-
-      &:is(:where(body):has(.section-soft)) {
-        background: var(--surface-40);
-      }
-
-      &:is(:where(body):has(*[data-slot='designer']) *) {
-        display: none;
-      }
+    &:is(:where(body):has(*[data-slot='designer']) *) {
+      display: none;
     }
   }
 </style>

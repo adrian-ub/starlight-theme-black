@@ -45,9 +45,8 @@ if (image) {
     <div class="hero-title-container">
       {
         announcement && (
-          <LinkButton href={announcement.link} variant="secondary" size="2xs">
+          <LinkButton href={announcement.link} variant="secondary" icon="right-arrow">
             {announcement.text}
-            <Icon name="right-arrow" size="16px" />
           </LinkButton>
         )
       }
@@ -62,7 +61,7 @@ if (image) {
         actions.length > 0 && (
           <div class="actions">
             {actions.map(({ attrs: { class: className, ...attrs } = {}, icon, link: href, text, variant }) => (
-              <LinkButton {href} {variant} class:list={[className]} {...attrs}>
+              <LinkButton {href} {variant} icon={icon?.name} class:list={[className]} {...attrs}>
                 {text}
                 {icon?.html && <Fragment set:html={icon.html} />}
               </LinkButton>

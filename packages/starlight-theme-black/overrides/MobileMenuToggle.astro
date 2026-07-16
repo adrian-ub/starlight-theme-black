@@ -1,4 +1,8 @@
-<button class="mobile-menu-toggle" popovertargetaction="toggle" popovertarget="mobile-nav" aria-expanded="false">
+---
+
+---
+
+<button class="mobile-menu-toggle" aria-expanded="false" aria-controls="starlight__sidebar">
   <div class="hamburger">
     <span class="bar bar-1"></span>
     <span class="bar bar-2"></span>
@@ -86,16 +90,30 @@
 <script>
   function initMobileMenuToggle() {
     const toggle = document.querySelector('.mobile-menu-toggle') as HTMLButtonElement | null
-    const popover = document.getElementById('mobile-nav') as HTMLElement | null
-    if (!toggle || !popover) return
+    const sidebar = document.getElementById('starlight__sidebar') as HTMLElement | null
+    if (!toggle || !sidebar) return
 
-    const updateState = () => {
-      const isOpen = popover.matches(':popover-open')
-      toggle.setAttribute('aria-expanded', String(isOpen))
+    const setExpanded = (expanded: boolean) => {
+      toggle.setAttribute('aria-expanded', String(expanded))
+      sidebar.setAttribute('aria-expanded', String(expanded))
+      document.documentElement.style.overflow = expanded ? 'hidden' : ''
     }
 
-    popover.addEventListener('toggle', updateState)
-    updateState()
+    toggle.addEventListener('click', () => {
+      const isExpanded = toggle.getAttribute('aria-expanded') === 'true'
+      setExpanded(!isExpanded)
+    })
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+        setExpanded(false)
+        toggle.focus()
+      }
+    })
+
+    matchMedia('(min-width: 1024px)').addEventListener('change', (e) => {
+      if (e.matches) setExpanded(false)
+    })
   }
 
   initMobileMenuToggle()
