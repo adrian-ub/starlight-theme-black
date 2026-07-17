@@ -21,7 +21,7 @@ import { Steps, Tabs, TabItem } from '@astrojs/starlight/components'
    <TabItem label="npm">
 
    ```sh
-   npm install starlight-theme-black @fontsource/geist-mono @fontsource/geist-sans
+   npm install starlight-theme-black @fontsource-variable/geist-mono @fontsource-variable/geist
    ```
 
    </TabItem>
@@ -29,7 +29,7 @@ import { Steps, Tabs, TabItem } from '@astrojs/starlight/components'
    <TabItem label="pnpm">
 
    ```sh
-   pnpm add starlight-theme-black @fontsource/geist-mono @fontsource/geist-sans
+   pnpm add starlight-theme-black @fontsource-variable/geist-mono @fontsource-variable/geist
    ```
 
    </TabItem>
@@ -37,7 +37,7 @@ import { Steps, Tabs, TabItem } from '@astrojs/starlight/components'
    <TabItem label="Yarn">
 
    ```sh
-   yarn add starlight-theme-black @fontsource/geist-mono @fontsource/geist-sans
+   yarn add starlight-theme-black @fontsource-variable/geist-mono @fontsource-variable/geist
    ```
 
    </TabItem>
@@ -61,11 +61,9 @@ import { Steps, Tabs, TabItem } from '@astrojs/starlight/components'
    +            label: 'Docs',
    +            link: '/getting-started',
    +          }],
-   +          footerText: //optional
-   +            'Built & designed by [shadcn](https://twitter.com/shadcn). Ported to Astro Starlight by [Adrián UB](https://github.com/adrian-ub). The source code is available on [GitHub](https://github.com/adrian-ub/starlight-theme-black).'
    +        })
    +      ],
-         title: 'My Docs',
+          title: 'My Docs',
        }),
      ],
    })

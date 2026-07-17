@@ -1,7 +1,7 @@
 @layer black {
   :root:root {
-    --sl-font: 'Geist Sans';
-    --sl-font-mono: 'Geist Mono';
+    --sl-font: 'Geist Variable';
+    --sl-font-mono: 'Geist Mono Variable';
   }
 
   :root[data-theme='dark'] {

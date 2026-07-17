@@ -61,7 +61,6 @@ export const StarlightThemeBlackConfigSchema = z.object({
         { name: 'Open in Scira', url: 'https://scira.ai/?q={prompt}', icon: defaultSciraIcon },
       ],
     }),
-  footerText: z.string().optional().default('Built & designed by [shadcn](https://twitter.com/shadcn). Ported to Astro Starlight by [Adrián UB](https://github.com/adrian-ub). The source code is available on [GitHub](https://github.com/adrian-ub/starlight-theme-black).'),
 })
 
 export type StarlightThemeBlackUserConfig = z.input<typeof StarlightThemeBlackConfigSchema>
