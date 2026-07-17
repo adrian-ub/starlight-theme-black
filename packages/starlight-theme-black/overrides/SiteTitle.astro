@@ -1,65 +1,19 @@
 ---
-import config from 'virtual:starlight/user-config'
-import { logos } from 'virtual:starlight/user-images'
-
-const { siteTitle, siteTitleHref } = Astro.locals.starlightRoute
+import Default from '@astrojs/starlight/components/SiteTitle.astro'
+import NavBar from '../components/NavBar.astro'
+import MobileNavTrigger from '../components/MobileNavTrigger.astro'
 ---
 
-<a href={siteTitleHref} class="site-title">
-  {
-    config.logo && logos.dark && (
-      <>
-        <img
-          class:list={[{ 'light:sl-hidden': !('src' in config.logo) }, 'logo']}
-          alt={config.logo.alt}
-          src={logos.dark.src}
-          width={logos.dark.width}
-          height={logos.dark.height}
-        />
-        {/* Show light alternate if a user configure both light and dark logos. */}
-        {!('src' in config.logo) && (
-          <img
-            class="dark:sl-hidden logo"
-            alt={config.logo.alt}
-            src={logos.light?.src}
-            width={logos.light?.width}
-            height={logos.light?.height}
-          />
-        )}
-      </>
-    )
-  }
-  <span class:list={[{ 'sr-only': config.logo?.replacesTitle }, 'title-text']}>
-    {siteTitle}
-  </span>
-</a>
+<div>
+  <Default />
+  <NavBar />
+  <MobileNavTrigger />
+</div>
 
 <style>
-  .logo {
-    max-height: 32px;
-    max-width: 32px;
-  }
-
-  .site-title {
-    gap: 0.5rem;
-    align-items: center;
+  div {
     display: flex;
-    margin-right: calc(var(--spacing) * 3);
-  }
-
-  .title-text {
-    font-weight: 700;
-    display: none;
-  }
-
-  @media (min-width: 1024px) {
-    .title-text {
-      display: inline-block;
-    }
-  }
-
-  a {
-    color: inherit;
-    text-decoration: inherit;
+    align-items: center;
+    gap: var(--sl-nav-gap);
   }
 </style>

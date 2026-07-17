@@ -24,22 +24,13 @@ export default function starlightThemeBlack(userConfig: StarlightThemeBlackUserC
           components: overrideComponents(
             starlightConfig,
             [
-              'ThemeSelect',
-              // 'PageFrame',
-              'Header',
-              'SiteTitle',
-              'Sidebar',
-              // 'TwoColumnContent',
-              // 'ContentPanel',
-              'PageTitle',
-              // 'MarkdownContent',
               'Hero',
-              // 'Footer',
-              // 'SocialIcons',
+              'MobileMenuToggle',
+              'PageTitle',
               'Pagination',
-              // 'Search',
-              // 'TableOfContents',
-              // 'PageSidebar',
+              'Sidebar',
+              'SiteTitle',
+              'ThemeSelect',
             ],
             logger,
           ),
@@ -71,7 +62,7 @@ export default function starlightThemeBlack(userConfig: StarlightThemeBlackUserC
             starlightConfig.expressiveCode === false
               ? false
               : {
-                  themes: ['github-dark-default', 'github-light-default'],
+                  themes: ['vesper', 'github-light-default'],
                   ...userExpressiveCodeConfig,
                   styleOverrides: {
                     codeBackground: 'var(--code-background)',

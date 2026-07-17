@@ -7,6 +7,9 @@
     --sl-sidebar-width: calc(var(--spacing) * 72);
     --sl-nav-height: calc(var(--spacing) * 16);
     --sl-nav-pad-x: calc(var(--spacing) * 6);
+    --sl-color-bg-sidebar: var(--background);
+    --sl-content-width: calc(var(--spacing) * 160);
+
     /* starlight color mappings */
     --sl-color-text-accent: var(--foreground);
     --sl-color-banner-text: var(--foreground);
@@ -71,15 +74,140 @@
     border-bottom: none;
   }
 
+  .site-title {
+    gap: 0.5rem;
+    font-weight: 700;
+    font-size: 1rem;
+  }
+
+  .site-title > img {
+    max-height: 32px;
+    max-width: 32px;
+  }
+
+  .site-title > span {
+    display: none;
+    @media (min-width: 1024px) {
+      display: inline-block;
+    }
+  }
+
+  .social-icons::after {
+    content: '';
+    height: 1rem;
+    border-inline-end: 1px solid var(--sl-color-gray-5);
+  }
+
   .sidebar-pane {
+    display: flex;
+    overscroll-behavior: none;
+    overflow: hidden;
+    flex-direction: column;
+    height: calc(100svh - 10rem);
     overflow-y: hidden;
     border-inline-end: none;
+    padding: 0;
+    top: calc(var(--sl-nav-height) + 0.6rem);
+  }
+
+  .sidebar-pane::after {
+    position: absolute;
+    content: '';
+    top: 0rem;
+    right: 0rem;
+    bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, transparent 0%, var(--border) 50%, transparent 100%);
+    display: none;
+    z-index: 1;
+
+    @media (min-width: 1024px) {
+      display: flex;
+    }
+  }
+
+  .sidebar-content {
+    padding: 0;
+    padding-left: calc(var(--spacing) * 2.5);
+    width: calc(var(--spacing) * 56);
+    overflow-x: hidden;
+    overflow: auto;
+    min-height: 0;
+    gap: calc(var(--spacing) * 2);
+    flex-direction: column;
+    scrollbar-width: none;
+    display: flex;
+
+    --_scroll-fade-size-t: var(--scroll-fade-t-size, var(--scroll-fade-size, min(12%, calc(var(--spacing) * 10))));
+    --_scroll-fade-size-b: var(--scroll-fade-b-size, var(--scroll-fade-size, min(12%, calc(var(--spacing) * 10))));
+    --scroll-fade-block: linear-gradient(
+      to bottom,
+      transparent 0,
+      #000 var(--scroll-fade-t, 0px),
+      #000 calc(100% - var(--scroll-fade-b, 0px)),
+      transparent 100%
+    );
+    -webkit-mask-image: var(--scroll-fade-mask, var(--scroll-fade-block));
+    -webkit-mask-image: var(--scroll-fade-mask, var(--scroll-fade-block));
+    -webkit-mask-image: var(--scroll-fade-mask, var(--scroll-fade-block));
+    -webkit-mask-image: var(--scroll-fade-mask, var(--scroll-fade-block));
+    mask-image: var(--scroll-fade-mask, var(--scroll-fade-block));
+    -webkit-mask-composite: source-in;
+    -webkit-mask-composite: source-in;
+    -webkit-mask-composite: source-in;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+
+    @supports (animation-timeline: scroll()) {
+      animation:
+        1ms ease-in-out scroll-fade-reveal-t,
+        1ms ease-in-out scroll-fade-reveal-b;
+      animation-timeline: scroll(self y), scroll(self y);
+      animation-range:
+        0 var(--scroll-fade-reveal, calc(var(--spacing) * 24)),
+        calc(100% - var(--scroll-fade-reveal, calc(var(--spacing) * 24))) 100%;
+      animation-fill-mode: both;
+    }
+  }
+
+  @keyframes scroll-fade-reveal-t {
+    0% {
+      --scroll-fade-t: 0px;
+    }
+
+    100% {
+      --scroll-fade-t: var(--_scroll-fade-size-t, var(--scroll-fade-size, min(12%, calc(var(--spacing) * 10))));
+    }
+  }
+
+  @keyframes scroll-fade-reveal-b {
+    0% {
+      --scroll-fade-b: var(--_scroll-fade-size-b, var(--scroll-fade-size, min(12%, calc(var(--spacing) * 10))));
+    }
+
+    100% {
+      --scroll-fade-b: 0px;
+    }
   }
 
   site-search {
-    display: flex;
+    display: none;
     justify-content: flex-end;
+    align-items: center;
     width: 100%;
+    @media (min-width: 48rem) {
+      display: flex;
+    }
+  }
+
+  site-search::after {
+    content: '';
+    display: block;
+    height: 1rem;
+    margin-left: 1rem;
+    border-inline-end: 1px solid var(--sl-color-gray-5);
   }
 
   site-search > button[data-open-modal] {
@@ -97,6 +225,18 @@
     font-weight: 400;
     font-size: 0.875rem;
     line-height: 1.25rem;
+
+    @media (min-width: 48rem) {
+      width: calc(var(--spacing) * 48);
+    }
+
+    @media (min-width: 64rem) {
+      width: calc(var(--spacing) * 40);
+    }
+
+    @media (min-width: 80rem) {
+      width: calc(var(--spacing) * 64);
+    }
   }
 
   site-search > button[data-open-modal] svg {
@@ -107,22 +247,8 @@
     display: none;
   }
 
-  @media (min-width: 48rem) {
-    site-search > button[data-open-modal] {
-      width: calc(var(--spacing) * 48);
-    }
-  }
-
-  @media (min-width: 64rem) {
-    site-search > button[data-open-modal] {
-      width: calc(var(--spacing) * 40);
-    }
-  }
-
-  @media (min-width: 80rem) {
-    site-search > button[data-open-modal] {
-      width: calc(var(--spacing) * 64);
-    }
+  .content-panel {
+    padding: 0;
   }
 
   .content-panel + .content-panel {
@@ -131,6 +257,42 @@
 
   .right-sidebar {
     border-inline-start: none;
+  }
+
+  .right-sidebar-container {
+    width: calc(var(--spacing) * 72);
+  }
+
+  mobile-starlight-toc {
+    display: none;
+  }
+
+  .main-frame {
+    padding-top: var(--sl-nav-height);
+  }
+
+  .main-pane {
+    flex: 1;
+    padding-block: calc(var(--spacing) * 6);
+    padding-inline: calc(var(--spacing) * 4);
+    min-width: calc(var(--spacing) * 0);
+    max-width: calc(var(--spacing) * 160);
+    margin-inline: auto;
+
+    @media (min-width: 64rem) {
+      padding-block: calc(var(--spacing) * 8);
+      padding-top: calc(calc(var(--spacing) * 4) + calc(var(--spacing) * 8));
+    }
+
+    @media (min-width: 48rem) {
+      padding-inline: calc(var(--spacing) * 0);
+    }
+  }
+
+  .main-pane > main {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing) * 6);
   }
 
   starlight-toc h2 {
@@ -160,18 +322,6 @@
 
   footer > .meta > :first-child {
     margin-left: auto;
-  }
-
-  .container-wrapper {
-    width: 100%;
-    padding-inline: calc(var(--spacing) * 2);
-    margin-inline: auto;
-  }
-
-  .container {
-    max-width: var(--container-max-width);
-    margin-inline: auto;
-    width: 100%;
   }
 
   /* global typography refinements */

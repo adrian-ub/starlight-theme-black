@@ -239,9 +239,13 @@ const copyButtonContent = `---\ntitle: ${title}\ndescription: ${description}\n--
   .copy-page-group {
     background-color: var(--secondary);
     border-radius: var(--radius);
-    display: flex;
+    display: none;
     position: relative;
     align-items: center;
+
+    @media (min-width: 40rem) {
+      display: flex;
+    }
   }
 
   .copy-page-separator {
