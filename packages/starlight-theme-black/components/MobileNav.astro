@@ -1,13 +1,12 @@
 ---
 import { getNavLinks } from '../libs/navbar'
 const { sidebar } = Astro.locals.starlightRoute
-const { class: className } = Astro.props
 
 const currentPath = Astro.url.pathname
 const navLinks = getNavLinks(Astro.currentLocale)
 ---
 
-<div class:list={[className]}>
+<div class="mobile-nav">
   <div class="mobile-nav-content">
     <div class="mobile-nav-section">
       <div class="mobile-nav-label">{Astro.locals.t('menuButton.accessibleLabel')}</div>
@@ -47,14 +46,29 @@ const navLinks = getNavLinks(Astro.currentLocale)
 </div>
 
 <style>
-  div {
-    padding: 0;
-    width: 100%;
+  :global(html[data-mobile-menu-expanded]),
+  :global(body[data-mobile-menu-expanded]) {
+    overflow: hidden;
     height: 100%;
+  }
+
+  :global([data-mobile-menu-expanded]) {
+    --black-menu-visibility: visible;
+  }
+
+  .mobile-nav {
+    visibility: var(--black-menu-visibility, hidden);
     display: flex;
+    position: fixed;
+    top: var(--sl-nav-height);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: calc(var(--sl-z-index-navbar) + 2);
+    background-color: color-mix(in oklab, var(--background) 90%, transparent);
+    backdrop-filter: blur(8px);
     flex-direction: column;
     justify-content: flex-start;
-    overflow: hidden;
   }
 
   .mobile-nav-content {

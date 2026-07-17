@@ -1,15 +1,58 @@
 ---
-
+import MobileNav from './MobileNav.astro'
 ---
 
-<button class="mobile-menu-toggle" aria-expanded="false" aria-controls="starlight__sidebar">
-  <div class="hamburger">
-    <span class="bar bar-1"></span>
-    <span class="bar bar-2"></span>
-  </div>
-  <span class="label">{Astro.locals.t('menuButton.accessibleLabel')}</span>
-  <span class="sr-only">{Astro.locals.t('menuButton.accessibleLabel')}</span>
-</button>
+<black-menu-button class="print:hidden">
+  <button class="sl-flex md:sl-hidden" aria-expanded="false" aria-controls="starlight__sidebar">
+    <div class="hamburger">
+      <span class="bar bar-1"></span>
+      <span class="bar bar-2"></span>
+    </div>
+    <span class="label">{Astro.locals.t('menuButton.accessibleLabel')}</span>
+    <span class="sr-only">{Astro.locals.t('menuButton.accessibleLabel')}</span>
+  </button>
+</black-menu-button>
+
+<MobileNav />
+
+<script>
+  class BlackMenuButton extends HTMLElement {
+    btn = this.querySelector('button')!
+
+    constructor() {
+      super()
+      this.btn.addEventListener('click', () => this.toggleExpanded())
+
+      const parentNav = this.closest('nav')
+      if (parentNav) {
+        parentNav.addEventListener('keyup', (e) => this.closeOnEscape(e))
+      }
+
+      matchMedia('(min-width: 50em)').addEventListener('change', () => this.setExpanded(false))
+    }
+
+    setExpanded(expanded: boolean) {
+      this.btn.setAttribute('aria-expanded', String(expanded))
+      document.body.toggleAttribute('data-mobile-menu-expanded', expanded)
+      document.querySelectorAll<HTMLElement>('.main-frame, .sl-skip-link').forEach((el) => {
+        el.toggleAttribute('inert', expanded)
+      })
+    }
+
+    toggleExpanded() {
+      this.setExpanded(this.btn.getAttribute('aria-expanded') !== 'true')
+    }
+
+    closeOnEscape(e: KeyboardEvent) {
+      if (e.code === 'Escape') {
+        this.setExpanded(false)
+        this.btn.focus()
+      }
+    }
+  }
+
+  customElements.define('black-menu-button', BlackMenuButton)
+</script>
 
 <style>
   button {
@@ -28,14 +71,8 @@
     -webkit-tap-highlight-color: transparent;
     border-radius: calc(var(--radius) - 2px);
     transition: background-color 0.15s ease;
-  }
 
-  button:hover {
-    background-color: color-mix(in oklab, var(--accent) 80%, transparent);
-  }
-
-  @media (min-width: 1024px) {
-    button {
+    @media (min-width: 50rem) {
       display: none;
     }
   }
@@ -53,8 +90,8 @@
     display: block;
     position: absolute;
     left: 0;
-    width: 1rem;
-    height: 2px;
+    width: calc(var(--spacing) * 4);
+    height: calc(var(--spacing) * 0.5);
     background-color: var(--foreground);
     border-radius: 1px;
     transition:
@@ -64,11 +101,11 @@
 
   /* Closed state: two parallel lines */
   .bar-1 {
-    top: 3px;
+    top: calc(var(--spacing) * 1);
   }
 
   .bar-2 {
-    top: 9px;
+    top: calc(var(--spacing) * 2.5);
   }
 
   /* Open state: both centered + rotated to form X */
@@ -86,36 +123,3 @@
     font-weight: 500;
   }
 </style>
-
-<script>
-  function initMobileMenuToggle() {
-    const toggle = document.querySelector('.mobile-menu-toggle') as HTMLButtonElement | null
-    const sidebar = document.getElementById('starlight__sidebar') as HTMLElement | null
-    if (!toggle || !sidebar) return
-
-    const setExpanded = (expanded: boolean) => {
-      toggle.setAttribute('aria-expanded', String(expanded))
-      sidebar.setAttribute('aria-expanded', String(expanded))
-      document.documentElement.style.overflow = expanded ? 'hidden' : ''
-    }
-
-    toggle.addEventListener('click', () => {
-      const isExpanded = toggle.getAttribute('aria-expanded') === 'true'
-      setExpanded(!isExpanded)
-    })
-
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
-        setExpanded(false)
-        toggle.focus()
-      }
-    })
-
-    matchMedia('(min-width: 1024px)').addEventListener('change', (e) => {
-      if (e.matches) setExpanded(false)
-    })
-  }
-
-  initMobileMenuToggle()
-  document.addEventListener('astro:after-swap', initMobileMenuToggle)
-</script>

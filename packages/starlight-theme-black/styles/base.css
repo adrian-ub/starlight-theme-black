@@ -78,6 +78,11 @@
     gap: 0.5rem;
     font-weight: 700;
     font-size: 1rem;
+    display: none;
+
+    @media (min-width: 48rem) {
+      display: flex;
+    }
   }
 
   .site-title > img {
@@ -247,6 +252,10 @@
     display: none;
   }
 
+  .right-group {
+    display: flex;
+  }
+
   .content-panel {
     padding: 0;
   }
@@ -271,12 +280,15 @@
     padding-top: var(--sl-nav-height);
   }
 
+  [data-has-sidebar][data-has-toc] .main-pane {
+    max-width: calc(var(--spacing) * 160);
+  }
+
   .main-pane {
     flex: 1;
     padding-block: calc(var(--spacing) * 6);
     padding-inline: calc(var(--spacing) * 4);
     min-width: calc(var(--spacing) * 0);
-    max-width: calc(var(--spacing) * 160);
     margin-inline: auto;
 
     @media (min-width: 64rem) {
