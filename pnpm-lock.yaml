@@ -68,12 +68,6 @@ importers:
       '@astrojs/starlight':
         specifier: '>=0.41'
         version: 0.41.3(@astrojs/markdown-remark@7.2.1)(astro@7.0.9(@astrojs/markdown-remark@7.2.1)(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)(@types/node@25.0.2)(jiti@2.6.1)(yaml@2.8.2))(typescript@5.9.3)
-      '@pagefind/default-ui':
-        specifier: ^1.4.0
-        version: 1.4.0
-      satteri:
-        specifier: ^0.9.3
-        version: 0.9.5
 
 packages:
 

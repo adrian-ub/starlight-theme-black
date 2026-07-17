@@ -31,9 +31,5 @@
   },
   "peerDependencies": {
     "@astrojs/starlight": ">=0.41"
-  },
-  "dependencies": {
-    "@pagefind/default-ui": "^1.4.0",
-    "satteri": "^0.9.3"
   }
 }
