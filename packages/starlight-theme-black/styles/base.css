@@ -67,6 +67,11 @@
     ::backdrop {
       --sl-color-backdrop-overlay: color-mix(in oklab, var(--background) 80%, transparent);
     }
+
+    ::selection {
+      background-color: var(--selection);
+      color: var(--selection-foreground);
+    }
   }
 
   header.header {

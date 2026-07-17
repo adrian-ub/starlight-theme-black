@@ -32,6 +32,9 @@
     --red-low: oklch(25.8% 0.092 26.042);
     --red: oklch(70.4% 0.191 22.216);
     --red-high: oklch(80.8% 0.114 19.571);
+
+    --selection: oklch(0.922 0 0);
+    --selection-foreground: oklch(0.205 0 0);
   }
 
   :root[data-theme='light'] {
@@ -68,5 +71,8 @@
     --secondary: var(--gray-7);
     --muted-foreground: var(--gray-4);
     --popover-background: var(--background);
+
+    --selection: oklch(0% 0 0);
+    --selection-foreground: oklch(1 0 0);
   }
 }

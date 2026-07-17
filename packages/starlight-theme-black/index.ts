@@ -89,12 +89,12 @@ export default function starlightThemeBlack(userConfig: StarlightThemeBlackUserC
                 fonts: [
                   {
                     provider: fontProviders.fontsource(),
-                    name: 'Geist Variable',
+                    name: 'Geist Sans',
                     cssVariable: "--font-geist",
                   },
                   {
                     provider: fontProviders.fontsource(),
-                    name: 'Geist Mono Variable',
+                    name: 'Geist Mono',
                     cssVariable: "--font-geist-mono",
                   }
                 ]
