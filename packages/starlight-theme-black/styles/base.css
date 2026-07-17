@@ -243,6 +243,10 @@
     display: none;
   }
 
+  site-search > button > span {
+    display: block;
+  }
+
   .right-sidebar-container {
     width: calc(var(--spacing) * 72);
     display: none;
