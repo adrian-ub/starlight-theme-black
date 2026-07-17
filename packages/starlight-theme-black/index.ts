@@ -3,6 +3,7 @@ import type { StarlightPlugin } from '@astrojs/starlight/types'
 import { StarlightThemeBlackConfigSchema, type StarlightThemeBlackUserConfig } from './libs/config'
 import { overrideComponents } from './libs/starlight'
 import { vitePluginStarlightThemeBlack } from './libs/vite'
+import { fontProviders } from 'astro/config'
 
 export default function starlightThemeBlack(userConfig: StarlightThemeBlackUserConfig): StarlightPlugin {
   const parsedConfig = StarlightThemeBlackConfigSchema.safeParse(userConfig)
@@ -24,6 +25,7 @@ export default function starlightThemeBlack(userConfig: StarlightThemeBlackUserC
           components: overrideComponents(
             starlightConfig,
             [
+              'Head',
               'Hero',
               'MobileMenuToggle',
               'PageTitle',
@@ -36,8 +38,6 @@ export default function starlightThemeBlack(userConfig: StarlightThemeBlackUserC
           ),
           customCss: [
             ...(starlightConfig.customCss ?? []),
-            '@fontsource-variable/geist-mono/wght.css',
-            '@fontsource-variable/geist/wght.css',
             'starlight-theme-black/styles/layers',
             'starlight-theme-black/styles/theme',
             'starlight-theme-black/styles/base',
@@ -46,43 +46,59 @@ export default function starlightThemeBlack(userConfig: StarlightThemeBlackUserC
             starlightConfig.expressiveCode === false
               ? false
               : {
-                  themes: ['vesper', 'github-light-default'],
-                  ...userExpressiveCodeConfig,
-                  styleOverrides: {
-                    codeBackground: 'var(--code-background)',
-                    borderRadius: 'calc(var(--radius) + 4px)',
-                    gutterBorderWidth: '0px',
-                    borderColor: 'transparent',
-                    gutterBorderColor: 'transparent',
-                    ...userExpressiveCodeConfig?.styleOverrides,
-                    frames: {
-                      shadowColor: 'transparent',
-                      editorBackground: 'var(--code-background)',
-                      terminalBackground: 'var(--code-background)',
-                      editorTabBarBackground: 'var(--code-background)',
-                      editorActiveTabBackground: 'var(--code-background)',
-                      editorActiveTabIndicatorTopColor: 'transparent',
-                      editorTabBarBorderColor: 'transparent',
-                      editorActiveTabBorderColor: 'transparent',
-                      terminalTitlebarBorderBottomColor: 'transparent',
-                      editorTabBarBorderBottomColor: 'var(--border)',
-                      editorActiveTabIndicatorBottomColor: 'var(--border)',
-                      ...userExpressiveCodeConfig?.styleOverrides?.frames,
-                    },
-                    textMarkers: {
-                      markBackground: 'var(--mark-background)',
-                      markBorderColor: 'var(--border)',
-                      ...userExpressiveCodeConfig?.styleOverrides?.textMarkers,
-                    },
+                themes: ['vesper', 'github-light-default'],
+                ...userExpressiveCodeConfig,
+                styleOverrides: {
+                  codeBackground: 'var(--code-background)',
+                  borderRadius: 'calc(var(--radius) + 4px)',
+                  gutterBorderWidth: '0px',
+                  borderColor: 'transparent',
+                  gutterBorderColor: 'transparent',
+                  ...userExpressiveCodeConfig?.styleOverrides,
+                  frames: {
+                    shadowColor: 'transparent',
+                    editorBackground: 'var(--code-background)',
+                    terminalBackground: 'var(--code-background)',
+                    editorTabBarBackground: 'var(--code-background)',
+                    editorActiveTabBackground: 'var(--code-background)',
+                    editorActiveTabIndicatorTopColor: 'transparent',
+                    editorTabBarBorderColor: 'transparent',
+                    editorActiveTabBorderColor: 'transparent',
+                    terminalTitlebarBorderBottomColor: 'transparent',
+                    editorTabBarBorderBottomColor: 'var(--border)',
+                    editorActiveTabIndicatorBottomColor: 'var(--border)',
+                    ...userExpressiveCodeConfig?.styleOverrides?.frames,
+                  },
+                  textMarkers: {
+                    markBackground: 'var(--mark-background)',
+                    markBorderColor: 'var(--border)',
+                    ...userExpressiveCodeConfig?.styleOverrides?.textMarkers,
                   },
                 },
+              },
         })
 
         addIntegration({
           name: 'starlight-theme-black-integration',
           hooks: {
             'astro:config:setup': ({ updateConfig }) => {
-              updateConfig({ vite: { plugins: [vitePluginStarlightThemeBlack(config)] } })
+              updateConfig({
+                vite: {
+                  plugins: [vitePluginStarlightThemeBlack(config)]
+                },
+                fonts: [
+                  {
+                    provider: fontProviders.fontsource(),
+                    name: 'Geist Variable',
+                    cssVariable: "--font-geist",
+                  },
+                  {
+                    provider: fontProviders.fontsource(),
+                    name: 'Geist Mono Variable',
+                    cssVariable: "--font-geist-mono",
+                  }
+                ]
+              })
             },
           },
         })
