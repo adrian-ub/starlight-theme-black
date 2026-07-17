@@ -20,10 +20,7 @@ export default defineConfig({
               label: 'Home',
               link: '/',
             },
-            {
-              label: 'Docs',
-              link: '/getting-started',
-            },
+            'getting-started',
             {
               label: 'Starlight',
               link: 'https://starlight.astro.build',

@@ -1,16 +1,15 @@
 ---
-import { getNavLinks } from '../libs/navbar'
+import { getNavbarLinks } from '../libs/navbar'
 
-const currentPath = Astro.url.pathname
-const navLinks = getNavLinks(Astro.currentLocale)
+const navLinks = await getNavbarLinks(Astro.currentLocale)
 ---
 
 <nav class="nav-bar">
   {
     navLinks.map((nav) => (
-      <a class:list={[{ active: currentPath === nav.link }]} href={nav.link} {...nav.attrs}>
+      <a href={nav.link} {...nav.attrs}>
         {nav.label}
-        {nav.badge && <span class="new-dot" />}
+        {nav.badge && <span class="new-dot" aria-hidden="true" />}
       </a>
     ))
   }
@@ -45,6 +44,7 @@ const navLinks = getNavLinks(Astro.currentLocale)
     transition-duration: 0.15s;
     color: var(--foreground);
     position: relative;
+    gap: calc(var(--spacing) * 2);
   }
 
   .nav-bar a:hover {
@@ -53,11 +53,10 @@ const navLinks = getNavLinks(Astro.currentLocale)
   }
 
   .new-dot {
-    width: 6px;
-    height: 6px;
+    width: calc(var(--spacing) * 2);
+    height: calc(var(--spacing) * 2);
     border-radius: 50%;
     background: #3b82f6;
-    margin-left: calc(var(--spacing) * 1.5);
     flex-shrink: 0;
   }
 </style>

@@ -1,9 +1,9 @@
 ---
-import { getNavLinks } from '../libs/navbar'
+import { getNavbarLinks } from '../libs/navbar'
 const { sidebar } = Astro.locals.starlightRoute
 
 const currentPath = Astro.url.pathname
-const navLinks = getNavLinks(Astro.currentLocale)
+const navLinks = await getNavbarLinks(Astro.currentLocale)
 ---
 
 <div class="mobile-nav">
