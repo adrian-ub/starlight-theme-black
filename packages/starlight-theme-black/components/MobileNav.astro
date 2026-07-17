@@ -46,12 +46,6 @@ const navLinks = await getNavbarLinks(Astro.currentLocale)
 </div>
 
 <style>
-  :global(html[data-mobile-menu-expanded]),
-  :global(body[data-mobile-menu-expanded]) {
-    overflow: hidden;
-    height: 100%;
-  }
-
   :global([data-mobile-menu-expanded]) {
     --black-menu-visibility: visible;
   }

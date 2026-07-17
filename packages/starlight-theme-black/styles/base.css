@@ -84,7 +84,7 @@
     font-size: 1rem;
     display: none;
 
-    @media (min-width: 48rem) {
+    @media (min-width: 64rem) {
       display: flex;
     }
   }
@@ -94,17 +94,17 @@
     max-width: 32px;
   }
 
-  .site-title > span {
-    display: none;
-    @media (min-width: 1024px) {
-      display: inline-block;
-    }
-  }
-
   .social-icons::after {
     content: '';
     height: 1rem;
     border-inline-end: 1px solid var(--sl-color-gray-5);
+  }
+
+  nav.sidebar {
+    display: none;
+    @media (min-width: 64rem) {
+      display: flex;
+    }
   }
 
   .sidebar-pane {
@@ -283,6 +283,10 @@
 
   .main-frame {
     padding-top: var(--sl-nav-height);
+    padding-inline-start: 0;
+    @media (min-width: 64rem) {
+      padding-inline-start: var(--sl-content-inline-start);
+    }
   }
 
   [data-has-sidebar][data-has-toc] .main-pane {
