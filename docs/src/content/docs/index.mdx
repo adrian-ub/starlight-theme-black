@@ -4,32 +4,22 @@ description: Starlight theme inspired by Shadcn docs
 head:
   - tag: title
     content: starlight-theme-black
-  - tag: style
-    content: |
-      .hero-html {
-        --size: 12rem;
-        font-size: var(--size);
-        justify-content: center;
-        line-height: var(--size);
-      }
 template: splash
 editUrl: false
 hero:
+  announcement:
+    text: Introduce AI Utilities
+    link: /ai-utilities/
   tagline: Starlight theme inspired by Shadcn docs
   actions:
     - text: Get Started
       link: /getting-started/
-      icon: right-arrow
     - text: Examples
       link: /examples/kitchen-sink/
-      icon: right-arrow
       variant: minimal
 ---
 
 import { Card, CardGrid } from '@astrojs/starlight/components'
-import { ContainerSection } from 'starlight-theme-black/components'
-
-<ContainerSection>
 
 ## Next steps
 
@@ -47,5 +37,3 @@ import { ContainerSection } from 'starlight-theme-black/components'
     Learn more in the [`starlight-theme-black` documentation](/getting-started/).
   </Card>
 </CardGrid>
-
-</ContainerSection>

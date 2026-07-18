@@ -4,32 +4,4 @@ import SidebarSublist from './SidebarSublist.astro'
 const { sidebar } = Astro.locals.starlightRoute
 ---
 
-<div class="sidebar">
-  <div class="container-sidebar">
-    <SidebarSublist sublist={sidebar} />
-  </div>
-</div>
-
-<style>
-  .sidebar {
-    scrollbar-width: none;
-    padding-right: 1rem;
-    padding-top: 1.5rem;
-    padding-bottom: 1.5rem;
-    overflow: auto;
-    height: 100%;
-  }
-
-  @media (min-width: 1024px) {
-    .sidebar {
-      padding-top: 2rem;
-      padding-bottom: 2rem;
-    }
-  }
-
-  .container-sidebar {
-    gap: 1.5rem;
-    flex-direction: column;
-    display: flex;
-  }
-</style>
+<SidebarSublist sublist={sidebar} />

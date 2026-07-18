@@ -32,8 +32,13 @@ const { toc, depth = 0 } = Astro.props
     padding: 0;
   }
   li {
-    padding-top: 0.5rem;
+    line-height: 1;
+    padding-top: 0;
     margin-top: 0;
+  }
+
+  li + li {
+    margin-top: calc(var(--spacing) * 2);
   }
 
   a {
@@ -41,18 +46,23 @@ const { toc, depth = 0 } = Astro.props
     color: var(--muted-foreground);
     display: inline-block;
     text-decoration: inherit;
+    font-size: 0.8rem;
+    font-weight: 400;
+    line-height: 1.125rem;
   }
 
   a:hover {
-    color: var(--foreground);
+    color: color-mix(in oklab, var(--foreground) 72%, var(--muted-foreground));
   }
 
   a[aria-current] {
     color: var(--foreground);
+    font-weight: 500;
   }
 
   ul > li > ul {
-    --pad-inline: 0.5rem;
+    --pad-inline: calc(var(--spacing) * 2);
+    margin-top: calc(var(--spacing) * 2);
     padding-inline: calc((1rem - var(--pad-inline)) / var(--depth) + var(--pad-inline)) var(--pad-inline);
   }
 </style>

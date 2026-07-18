@@ -1,157 +1,141 @@
 ---
+import { Icon } from '@astrojs/starlight/components'
+import userConfig from 'virtual:starlight-theme-black-config'
+
 import { PAGE_TITLE_ID } from '../constants'
+import { resolveMarkdownActions } from '../libs/config'
+import MarkdownActions from '../components/MarkdownActions.astro'
 
 const {
-  entry: {
-    data: { title, template, description, links },
-  },
+  entry: { data, body },
+  pagination: { prev, next },
 } = Astro.locals.starlightRoute
+
+const { title, description } = data
+
+const resolved = resolveMarkdownActions(userConfig.docs, data.showMarkdownActions)
+
+const pageUrl = Astro.url.href
+
+const copyButtonContent = `---\ntitle: ${title}\ndescription: ${description}\n---\n\n${body}`.trim()
 ---
 
-{
-  template === 'doc' && (
-    <div class="breadcrumb">
-      <div class="truncate">Docs</div>
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      >
-        <path d="m9 18 6-6-6-6" />
-      </svg>
-      <div class="text-foreground">{title}</div>
+<div class="page-title">
+  <div class="page-title-header">
+    <h1 id={PAGE_TITLE_ID}>
+      {title}
+    </h1>
+
+    <div class="docs-nav">
+      <MarkdownActions enabled={resolved.enabled} agents={resolved.agents} content={copyButtonContent} url={pageUrl} />
+
+      <div class="nav-buttons">
+        {
+          prev && (
+            <a href={prev.href} aria-label="Previous page">
+              <Icon name="left-arrow" />
+            </a>
+          )
+        }
+
+        {
+          next && (
+            <a href={next.href} aria-label="Next page">
+              <Icon name="right-arrow" />
+            </a>
+          )
+        }
+      </div>
     </div>
-  )
-}
+  </div>
 
-<h1 id={PAGE_TITLE_ID}>{title}</h1>
-{description && <p>{description}</p>}
-
-{
-  links && (
-    <div class="links">
-      {links.doc && (
-        <a href={links.doc} target="_blank" rel="noreferrer">
-          {Astro.locals.t('black.links.doc')}
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="0.75rem"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="M15 3h6v6" />
-            <path d="M10 14 21 3" />
-            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-          </svg>
-        </a>
-      )}
-
-      {links.api && (
-        <a href={links.api} target="_blank" rel="noreferrer">
-          {Astro.locals.t('black.links.api')}
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="0.75rem"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="M15 3h6v6" />
-            <path d="M10 14 21 3" />
-            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-          </svg>
-        </a>
-      )}
-    </div>
-  )
-}
+  {description && <p class="page-description">{description}</p>}
+</div>
 
 <style>
-  .breadcrumb {
-    color: var(--muted-foreground);
-    line-height: 1;
-    font-size: 0.875rem;
-    align-items: center;
+  .page-title {
     display: flex;
-    margin-bottom: 1rem;
+    flex-direction: column;
+    gap: calc(var(--spacing) * 2);
   }
 
-  .truncate {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  .page-title-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: calc(var(--spacing) * 2);
+
+    @media (min-width: 768px) {
+      align-items: flex-start;
+    }
   }
 
-  .breadcrumb svg {
-    width: 0.875rem;
-    height: 0.875rem;
-    margin-left: 0.5rem;
-  }
-
-  .text-foreground {
+  .page-title-header h1 {
+    margin: 0;
     color: var(--foreground);
-    margin-left: 0.5rem;
-  }
-
-  h1 {
-    letter-spacing: -0.025em;
-    font-weight: 700;
     font-size: 1.875rem;
     line-height: 2.25rem;
-    scroll-margin: 5rem;
-    margin: 0;
-  }
-
-  p {
-    margin: 0;
-    margin-top: 0.5rem;
-    color: var(--muted-foreground);
-    font-size: 1rem;
-    line-height: 1.5rem;
-    text-wrap: balance;
-  }
-
-  .links {
-    padding-top: 1rem;
-    align-items: center;
-    display: flex;
-  }
-
-  .links > a {
-    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration: 0.15s;
-    color: var(--secondary-foreground);
     font-weight: 600;
-    font-size: 0.75rem;
-    line-height: 1rem;
-    padding-top: 0.125rem;
-    padding-bottom: 0.125rem;
-    padding-left: 0.625rem;
-    padding-right: 0.625rem;
-    background-color: var(--secondary);
-    border-radius: calc(var(--radius) - 2px);
-    gap: 0.25rem;
-    align-items: center;
-    display: inline-flex;
-    text-decoration: inherit;
+    letter-spacing: var(--tracking-tight);
+    scroll-margin: 5rem;
   }
 
-  .links > a:not(:first-child) {
-    margin-right: 0.5rem;
-    margin-left: 0.5rem;
+  .docs-nav {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--spacing) * 2);
+    flex-shrink: 0;
+  }
+
+  .nav-buttons {
+    display: flex;
+    gap: calc(var(--spacing) * 2);
+    margin-left: auto;
+  }
+
+  .nav-buttons a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: calc(var(--spacing) * 8);
+    height: calc(var(--spacing) * 8);
+    border-radius: calc(var(--radius) * 0.8);
+    color: var(--secondary-foreground);
+    background: var(--secondary);
+    text-decoration: none;
+    transition: background-color 0.15s ease;
+  }
+
+  .nav-buttons a:hover {
+    background: var(--accent);
+    color: var(--accent-foreground);
+  }
+
+  .page-description {
+    margin: 0;
+    color: var(--muted-foreground);
+    font-size: 1.05rem;
+    line-height: 1.75rem;
+    text-wrap: balance;
+
+    @media (min-width: 640px) {
+      font-size: 1rem;
+    }
+
+    @media (min-width: 768px) {
+      max-width: 80%;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .page-title-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .docs-nav {
+      width: 100%;
+      justify-content: flex-end;
+    }
   }
 </style>

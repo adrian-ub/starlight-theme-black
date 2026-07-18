@@ -1,62 +1,72 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
+import type { StarlightIcon } from '@astrojs/starlight/types'
+import { Icon } from '@astrojs/starlight/components'
 
 interface Props extends Omit<HTMLAttributes<'a'>, 'href'> {
   href: string | URL
+  icon?: StarlightIcon | undefined
+  iconPlacement?: 'start' | 'end' | undefined
   variant?: 'primary' | 'secondary' | 'minimal'
 }
 
-const { variant = 'primary', ...attrs } = Astro.props
+const { class: className, icon, iconPlacement = 'end', variant = 'primary', ...attrs } = Astro.props
 ---
 
-<a class:list={variant} {...attrs}>
+<a class:list={['sl-link-button not-content', variant, className]} {...attrs}>
+  {icon && iconPlacement === 'start' && <Icon name={icon} size="1.5rem" />}
   <slot />
+  {icon && iconPlacement === 'end' && <Icon name={icon} size="1.5rem" />}
 </a>
 
 <style>
-  a {
-    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration: 0.15s;
-    color: var(--primary-foreground);
-    font-weight: 500;
-    font-size: 0.75rem;
-    line-height: 1rem;
-    padding-left: 0.75rem;
-    padding-right: 0.75rem;
-    border-radius: calc(var(--radius) - 2px);
-    white-space: nowrap;
-    gap: 0.5rem;
-    justify-content: center;
-    align-items: center;
-    height: 2rem;
-    display: inline-flex;
-    text-decoration: inherit;
-  }
+  @layer starlight.components {
+    .sl-link-button {
+      align-items: center;
+      border: 1px solid transparent;
+      border-radius: 999rem;
+      display: inline-flex;
+      font-size: var(--sl-text-sm);
+      gap: 0.5em;
+      line-height: 1.1875;
+      outline-offset: 0.25rem;
+      padding: 0.4375rem 1.125rem;
+      text-decoration: none;
+    }
 
-  .primary {
-    background-color: var(--primary);
-  }
+    .sl-link-button.primary {
+      background: var(--sl-color-text-accent);
+      border-color: var(--sl-color-text-accent);
+      color: var(--sl-color-black);
+    }
+    .sl-link-button.primary:hover {
+      color: var(--sl-color-black);
+    }
+    .sl-link-button.secondary {
+      border-color: inherit;
+      color: var(--sl-color-white);
+    }
+    .sl-link-button.minimal {
+      color: var(--sl-color-white);
+      padding-inline: 0;
+    }
 
-  .primary:hover {
-    background-color: color-mix(in oklab, var(--primary) 90%, transparent);
-  }
+    .sl-link-button :global(svg) {
+      flex-shrink: 0;
+    }
 
-  .secondary {
-    background-color: var(--secondary);
-    color: var(--secondary-foreground);
-  }
+    @media (min-width: 50rem) {
+      .sl-link-button {
+        font-size: var(--sl-text-base);
+        padding: 0.9375rem 1.25rem;
+      }
+    }
 
-  .secondary:hover {
-    background-color: color-mix(in oklab, var(--secondary) 80%, transparent);
-  }
-
-  .minimal {
-    color: var(--accent-foreground);
-  }
-
-  .minimal:hover {
-    color: var(--accent-foreground);
-    background-color: var(--accent);
+    :global(.sl-markdown-content) .sl-link-button {
+      margin-inline-end: 1rem;
+    }
+    :global(.sl-markdown-content) .sl-link-button:not(:where(p *)) {
+      margin-block: 1rem;
+    }
   }
 </style>

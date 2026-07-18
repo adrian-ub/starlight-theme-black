@@ -17,9 +17,10 @@ export default defineConfig({
         starlightThemeBlack({
           navLinks: [
             {
-              label: 'Docs',
-              link: '/getting-started',
+              label: 'Home',
+              link: '/',
             },
+            'getting-started',
             {
               label: 'Starlight',
               link: 'https://starlight.astro.build',
@@ -35,14 +36,21 @@ export default defineConfig({
       sidebar: [
         {
           label: 'Start Here',
-          items: ['getting-started', 'customization'],
+          items: ['getting-started', 'customization', 'markdown-actions'],
         },
-        { label: 'Examples', autogenerate: { directory: 'examples' } },
+        {
+          label: 'Examples',
+          items: [{ autogenerate: { directory: 'examples' } }],
+        },
       ],
       social: [
         { href: 'https://github.com/adrian-ub/starlight-theme-black', icon: 'github', label: 'GitHub' },
       ],
       title: 'starlight/black',
+      locales: {
+        root: { label: 'English', lang: 'en' },
+        es: { label: 'Español', lang: 'es' },
+      },
     }),
   ],
 })

@@ -1,0 +1,278 @@
+---
+import ChatGPTIcon from './icons/ChatGPT.astro'
+import V0Icon from './icons/V0.astro'
+import ClaudeIcon from './icons/Claude.astro'
+import SciraIcon from './icons/Scira.astro'
+
+import type { ResolvedAgent } from '../schemas/markdown-actions'
+
+interface Props {
+  enabled: boolean
+  agents: ResolvedAgent[]
+  content: string
+  url: string
+}
+
+const { enabled, agents, content, url } = Astro.props
+
+const iconComponents = {
+  chatgpt: ChatGPTIcon,
+  v0: V0Icon,
+  claude: ClaudeIcon,
+  scira: SciraIcon,
+}
+
+type IconName = keyof typeof iconComponents
+
+function getAgentUrl(agent: ResolvedAgent) {
+  const prompt = agent.prompt.replace(/\{url\}/g, url)
+
+  return agent.url.replace(/\{url\}/g, url).replace(/\{prompt\}/g, encodeURIComponent(prompt))
+}
+---
+
+{
+  enabled && (
+    <div class="markdown-actions">
+      <button class="copy-page-action" data-content={content}>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="15"
+          height="15"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+          <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+        </svg>
+        <span>Copy page</span>
+      </button>
+
+      {agents.length > 0 && (
+        <>
+          <div class="markdown-actions-separator" />
+
+          <div class="markdown-actions-dropdown">
+            <button class="markdown-actions-trigger" type="button" aria-expanded="false" aria-haspopup="true">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="m6 9 6 6 6-6" />
+              </svg>
+            </button>
+
+            <div class="markdown-actions-menu" role="menu">
+              {agents.map((agent) => {
+                const IconComponent = agent.icon in iconComponents ? iconComponents[agent.icon as IconName] : null
+
+                return (
+                  <a
+                    href={getAgentUrl(agent)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    role="menuitem"
+                    class="markdown-actions-item"
+                  >
+                    {IconComponent && <IconComponent />}
+
+                    <span>{agent.label}</span>
+                  </a>
+                )
+              })}
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  )
+}
+
+<script>
+  const checkIcon = `
+<svg
+ xmlns="http://www.w3.org/2000/svg"
+ width="15"
+ height="15"
+ viewBox="0 0 24 24"
+ fill="none"
+ stroke="currentColor"
+ stroke-width="2"
+ stroke-linecap="round"
+ stroke-linejoin="round"
+>
+ <polyline points="20 6 9 17 4 12"/>
+</svg>
+`
+
+  function initMarkdownActions() {
+    document.querySelectorAll('.copy-page-action').forEach((button) => {
+      button.addEventListener('click', async () => {
+        const element = button as HTMLElement
+
+        const content = element.dataset.content
+
+        if (!content) {
+          return
+        }
+
+        await navigator.clipboard.writeText(content)
+
+        const original = element.innerHTML
+
+        element.innerHTML = `
+            ${checkIcon}
+            <span>Copy page</span>
+            `
+
+        setTimeout(() => {
+          element.innerHTML = original
+        }, 2000)
+      })
+    })
+
+    document.querySelectorAll('.markdown-actions-dropdown').forEach((dropdown) => {
+      const trigger = dropdown.querySelector('.markdown-actions-trigger') as HTMLButtonElement
+
+      const menu = dropdown.querySelector('.markdown-actions-menu') as HTMLElement
+
+      if (!trigger || !menu) {
+        return
+      }
+
+      trigger.addEventListener('click', (event) => {
+        event.stopPropagation()
+
+        const opened = menu.classList.contains('open')
+
+        menu.classList.toggle('open')
+
+        trigger.setAttribute('aria-expanded', String(!opened))
+      })
+
+      document.addEventListener('click', () => {
+        menu.classList.remove('open')
+
+        trigger.setAttribute('aria-expanded', 'false')
+      })
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          menu.classList.remove('open')
+
+          trigger.setAttribute('aria-expanded', 'false')
+        }
+      })
+    })
+  }
+
+  initMarkdownActions()
+
+  document.addEventListener('astro:after-swap', initMarkdownActions)
+</script>
+
+<style>
+  .markdown-actions {
+    display: flex;
+    align-items: center;
+    background: var(--secondary);
+    border-radius: var(--radius);
+  }
+
+  .copy-page-action,
+  .markdown-actions-trigger {
+    all: unset;
+    height: 2rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding-inline: 0.75rem;
+    cursor: pointer;
+    color: var(--secondary-foreground);
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  .markdown-actions-separator {
+    width: 1px;
+    height: 1rem;
+    background: var(--border);
+  }
+
+  .markdown-actions-dropdown {
+    position: relative;
+  }
+
+  .markdown-actions-trigger {
+    padding-inline: 0.5rem;
+  }
+
+  .markdown-actions-menu {
+    position: absolute;
+    top: calc(100% + 0.25rem);
+    right: 0;
+    z-index: 50;
+    min-width: 13rem;
+    padding: 0.25rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--background);
+    box-shadow: var(--shadow-md);
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.95);
+    transform-origin: top right;
+    transition:
+      opacity 0.1s ease,
+      transform 0.1s ease;
+  }
+
+  .markdown-actions-menu.open {
+    opacity: 1;
+    pointer-events: auto;
+    transform: scale(1);
+  }
+
+  .markdown-actions-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding-block: calc(var(--spacing) * 1.5);
+    padding-inline: calc(var(--spacing) * 2);
+    border-radius: calc(var(--radius) * 0.6);
+    color: var(--foreground);
+    text-decoration: none;
+    font-size: 0.875rem;
+  }
+
+  .markdown-actions-item:hover {
+    background: var(--accent);
+    color: var(--accent-foreground);
+  }
+
+  .markdown-actions-item svg {
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+    color: var(--muted-foreground);
+  }
+
+  @media (max-width: 640px) {
+    .markdown-actions {
+      display: none;
+    }
+  }
+</style>

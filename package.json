@@ -25,8 +25,8 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^6.7.1",
-    "@astrojs/starlight": "^0.38.1",
-    "astro": "^6.0.4",
+    "@astrojs/starlight": "^0.41.3",
+    "astro": "^7.0.9",
     "astro-eslint-parser": "^1.2.2",
     "bumpp": "^10.3.2",
     "eslint": "^9.39.2",

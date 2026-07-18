@@ -1,44 +1,263 @@
-import type { AstroBuiltinAttributes } from 'astro'
-import type { HTMLAttributes } from 'astro/types'
 import { z } from 'astro/zod'
+import { NavbarItemSchema } from '../schemas/navbar'
+import {
+  MarkdownActionsSchema,
+  type MarkdownActions,
+  type MarkdownActionsAgent,
+  type MarkdownActionsAgents,
+  type NormalizedMarkdownActions,
+  type ResolvedAgent,
+} from '../schemas/markdown-actions'
 
-const linkHTMLAttributesSchema = z.record(
-  z.union([z.string(), z.number(), z.boolean(), z.undefined()]),
-) as z.Schema<Omit<HTMLAttributes<'a'>, keyof AstroBuiltinAttributes | 'children'>>
+const DEFAULT_PROMPT =
+  "I'm looking at this documentation: {url}.\nHelp me understand how to use it. Be ready to explain concepts, give examples, or help debug based on it."
 
-// eslint-disable-next-line ts/explicit-function-return-type
-const LinkItemHTMLAttributesSchema = () => linkHTMLAttributesSchema.default({})
-
-const navLinkSchema = z.object({
-  /**
-   * An optional badge to display next to the topic label.
-   *
-   * This option accepts the same configuration as the Starlight badge sidebar item configuration.
-   * @see https://starlight.astro.build/guides/sidebar/#badges
-   */
-  badge: z.string().optional(),
-  /**
-   * The topic label visible at the top of the sidebar.
-   *
-   * The value can be a string, or for multilingual sites, an object with values for each different locale. When using
-   * the object form, the keys must be BCP-47 tags (e.g. en, fr, or zh-CN).
-   */
-  label: z.union([z.string(), z.record(z.string())]),
-  /**
-   * The link to the topic’s content which an be a relative link to local files or the full URL of an external page.
-   *
-   * For internal links, the link can either be a page included in the items array or a different page acting as the
-   * topic’s landing page.
-   */
-  link: z.string(),
-  /** HTML attributes to add to the link item. */
-  attrs: LinkItemHTMLAttributesSchema(),
-})
+const builtInAgents = new Map<
+  string,
+  Omit<ResolvedAgent, 'id' | 'prompt'>
+>([
+  [
+    'chatgpt',
+    {
+      label: 'Open in ChatGPT',
+      url: 'https://chatgpt.com/?q={prompt}',
+      icon: 'chatgpt',
+    },
+  ],
+  [
+    'v0',
+    {
+      label: 'Open in v0',
+      url: 'https://v0.dev/chat?q={prompt}',
+      icon: 'v0',
+    },
+  ],
+  [
+    'claude',
+    {
+      label: 'Open in Claude',
+      url: 'https://claude.ai/new?q={prompt}',
+      icon: 'claude',
+    },
+  ],
+  [
+    'scira',
+    {
+      label: 'Open in Scira',
+      url: 'https://scira.ai/?q={prompt}',
+      icon: 'scira',
+    },
+  ],
+])
 
 export const StarlightThemeBlackConfigSchema = z.object({
-  navLinks: z.array(navLinkSchema).optional(),
-  footerText: z.string().optional().default('Built & designed by [shadcn](https://twitter.com/shadcn). Ported to Astro Starlight by [Adrián UB](https://github.com/adrian-ub). The source code is available on [GitHub](https://github.com/adrian-ub/starlight-theme-black).'),
+  navLinks: NavbarItemSchema.array().optional(),
+
+  docs: z
+    .object({
+      showMarkdownActions: MarkdownActionsSchema.default(true),
+    })
+    .default({
+      showMarkdownActions: true,
+    }),
 })
 
-export type StarlightThemeBlackUserConfig = z.input<typeof StarlightThemeBlackConfigSchema>
-export type StarlightThemeBlackConfig = z.output<typeof StarlightThemeBlackConfigSchema>
+export type StarlightThemeBlackUserConfig = z.input<
+  typeof StarlightThemeBlackConfigSchema
+>
+
+export type StarlightThemeBlackConfig = z.output<
+  typeof StarlightThemeBlackConfigSchema
+>
+
+type DocsConfig = StarlightThemeBlackConfig['docs']
+
+function isOptions(
+  value: MarkdownActions | undefined,
+): value is Exclude<MarkdownActions, boolean> {
+  return typeof value === 'object' && value !== null
+}
+
+function mergeAgents(
+  global?: MarkdownActionsAgents,
+  local?: MarkdownActionsAgents,
+): Map<string, MarkdownActionsAgent> {
+  const agents = new Map<string, MarkdownActionsAgent>()
+
+  const addAgents = (source?: MarkdownActionsAgents) => {
+    if (!source) return
+
+    for (const key of Object.keys(source)) {
+      const value = source[key]
+
+      if (value !== undefined) {
+        agents.set(key, value)
+      }
+    }
+  }
+
+  addAgents(global)
+  addAgents(local)
+
+  return agents
+}
+
+function normalizeMarkdownActions(
+  globalConfig: MarkdownActions,
+  frontmatter?: MarkdownActions,
+): NormalizedMarkdownActions {
+  /*
+   * Frontmatter siempre gana.
+   *
+   * Ejemplos:
+   *
+   * global: false
+   * frontmatter: { agents: { chatgpt: true } }
+   * => habilitado
+   *
+   * global: { prompt: "A" }
+   * frontmatter: { prompt: "B" }
+   * => prompt B
+   */
+
+  if (frontmatter === false) {
+    return {
+      enabled: false,
+      prompt: DEFAULT_PROMPT,
+      agents: new Map(),
+    }
+  }
+
+  if (frontmatter === undefined && globalConfig === false) {
+    return {
+      enabled: false,
+      prompt: DEFAULT_PROMPT,
+      agents: new Map(),
+    }
+  }
+
+  const global =
+    isOptions(globalConfig)
+      ? globalConfig
+      : undefined
+
+  const local =
+    isOptions(frontmatter)
+      ? frontmatter
+      : undefined
+
+  return {
+    enabled: true,
+
+    prompt:
+      local?.prompt ??
+      global?.prompt ??
+      DEFAULT_PROMPT,
+
+    agents: mergeAgents(
+      global?.agents,
+      local?.agents,
+    ),
+  }
+}
+
+function resolveAgent(
+  id: string,
+  config: MarkdownActionsAgent,
+  prompt: string,
+): ResolvedAgent | undefined {
+  if (config === false) {
+    return undefined
+  }
+
+  const builtin = builtInAgents.get(id)
+
+  const overrides =
+    config === true
+      ? {}
+      : config
+
+  const url =
+    overrides.url ??
+    builtin?.url
+
+  if (!url) {
+    return undefined
+  }
+
+  return {
+    id,
+
+    label:
+      overrides.label ??
+      builtin?.label ??
+      id,
+
+    url,
+
+    prompt:
+      overrides.prompt ??
+      prompt,
+
+    icon:
+      overrides.icon ??
+      builtin?.icon ??
+      '',
+  }
+}
+
+function resolveAgents(
+  normalized: NormalizedMarkdownActions,
+): ResolvedAgent[] {
+  const agents = new Map(normalized.agents)
+
+  /*
+   * Los built-ins existen por defecto.
+   * La configuración del usuario puede sobrescribirlos.
+   */
+  for (const id of builtInAgents.keys()) {
+    if (!agents.has(id)) {
+      agents.set(id, true)
+    }
+  }
+
+  const resolved: ResolvedAgent[] = []
+
+  for (const [id, config] of agents) {
+    const agent = resolveAgent(
+      id,
+      config,
+      normalized.prompt,
+    )
+
+    if (agent) {
+      resolved.push(agent)
+    }
+  }
+
+  return resolved
+}
+
+export function resolveMarkdownActions(
+  globalConfig: DocsConfig,
+  frontmatter?: MarkdownActions,
+) {
+  const normalized = normalizeMarkdownActions(
+    globalConfig.showMarkdownActions,
+    frontmatter,
+  )
+
+  if (!normalized.enabled) {
+    return {
+      enabled: false,
+      prompt: normalized.prompt,
+      agents: [],
+    }
+  }
+
+  return {
+    enabled: true,
+    prompt: normalized.prompt,
+    agents: resolveAgents(normalized),
+  }
+}

@@ -1,12 +1,15 @@
 ---
+import { Icon } from '@astrojs/starlight/components'
 import { Image } from 'astro:assets'
+import { PAGE_TITLE_ID } from '../constants'
 import LinkButton from '../components/LinkButton.astro'
 
-import ContainerSection from '../components/ContainerSection.astro'
-import { PAGE_TITLE_ID } from '../constants'
-
 const { data } = Astro.locals.starlightRoute.entry
-const { title = data.title, tagline, image, actions = [] } = data.hero || {}
+const { title = data.title, tagline: heroTagline, image, actions = [] } = data.hero || {}
+const heroLayout = data.hero?.layout || 'media-left'
+const announcement = data.hero?.announcement
+const hasImage = !!image
+const tagline = heroTagline || data.description
 
 const imageAttrs = {
   loading: 'eager' as const,
@@ -31,84 +34,233 @@ if (image) {
 }
 ---
 
-<ContainerSection>
-  <div class="hero">
+<div class="hero" data-layout={heroLayout} data-has-image={hasImage ? '' : undefined}>
+  <div class="hero-image">
     {darkImage && <Image src={darkImage} {...imageAttrs} class:list={{ 'light:sl-hidden': Boolean(lightImage) }} />}
     {lightImage && <Image src={lightImage} {...imageAttrs} class="dark:sl-hidden" />}
     {rawHtml && <div class="hero-html sl-flex" set:html={rawHtml} />}
-    <h1 class="title" id={PAGE_TITLE_ID} data-page-title set:html={title} />
-    {tagline && <div class="tagline" set:html={tagline} />}
-    {
-      actions.length > 0 && (
-        <div class="actions">
-          {actions.map(({ attrs: { class: className, ...attrs } = {}, icon, link: href, text, variant }) => (
-            <LinkButton {href} {variant} class:list={[className]} {...attrs}>
-              {text}
-              {icon?.html && <Fragment set:html={icon.html} />}
-            </LinkButton>
-          ))}
-        </div>
-      )
-    }
   </div>
-</ContainerSection>
+
+  <div class="hero-info">
+    <div class="hero-title-container">
+      {
+        announcement && (
+          <a class="announcement" href={announcement.link}>
+            {announcement.text}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <>
+                <path d="M5 12h14" />
+                <path d="m12 5 7 7-7 7" />
+              </>
+            </svg>
+          </a>
+        )
+      }
+
+      <h1 id={PAGE_TITLE_ID} data-page-title set:html={title} />
+    </div>
+
+    <div class="hero-content-container">
+      {tagline && <div class="tagline" set:html={tagline} />}
+
+      {
+        actions.length > 0 && (
+          <div class="actions">
+            {actions.map(({ attrs: { class: className, ...attrs } = {}, icon, link: href, text, variant }) => (
+              <LinkButton {href} {variant} icon={icon?.name} class:list={[className]} {...attrs}>
+                {text}
+                {icon?.html && <Fragment set:html={icon.html} />}
+              </LinkButton>
+            ))}
+          </div>
+        )
+      }
+    </div>
+  </div>
+</div>
 
 <style>
-  .hero {
-    padding-top: 2rem;
-    padding-bottom: 2rem;
-    display: flex;
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 0.25rem;
-  }
-
-  @media (min-width: 1024px) {
-    .hero {
-      padding-top: 3rem;
-      padding-bottom: 3rem;
-    }
-  }
-  @media (min-width: 768px) {
-    .hero {
-      padding-top: 2.5rem;
-      padding-bottom: 2.5rem;
-    }
-  }
-
-  .title {
-    letter-spacing: -0.05em;
-    line-height: 1.25;
-    font-weight: 700;
-    font-size: 1.875rem;
-    line-height: 2.25rem;
-  }
-  @media (min-width: 1024px) {
-    .title {
-      line-height: 1.1;
-    }
-  }
-  @media (min-width: 768px) {
-    .title {
-      font-size: 2.25rem;
-      line-height: 2.5rem;
-    }
-  }
-
-  .tagline {
-    color: var(--foreground);
-    font-weight: 300;
-    font-size: 1.125rem;
-    line-height: 1.75rem;
-    max-width: 42rem;
-  }
-
-  .actions {
-    width: 100%;
-    padding-top: 0.5rem;
-    display: flex;
-    justify-content: flex-start;
+  .announcement {
+    text-decoration: none;
+    background-color: var(--muted);
+    color: var(--secondary-foreground);
+    white-space: nowrap;
+    font-weight: 500;
+    font-size: 0.75rem;
+    line-height: calc(1 / 0.75);
+    padding-block: calc(var(--spacing) * 0.5);
+    padding-inline: calc(var(--spacing) * 2);
+    border-radius: 3.40282e38px;
+    overflow: hidden;
+    gap: calc(var(--spacing) * 1);
+    justify-content: center;
     align-items: center;
-    gap: 0.5rem;
+    flex-shrink: 0;
+    width: fit-content;
+    display: inline-flex;
+  }
+
+  .announcement > svg {
+    width: calc(var(--spacing) * 3);
+    height: calc(var(--spacing) * 3);
+  }
+
+  .hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: calc(var(--spacing) * 12);
+  }
+
+  .hero > img,
+  .hero > .hero-html {
+    object-fit: contain;
+    width: min(70%, 20rem);
+    height: auto;
+    margin-inline: auto;
+  }
+
+  .hero-info {
+    display: flex;
+    text-align: center;
+    align-items: center;
+    flex-direction: column;
+    gap: calc(var(--spacing) * 2);
+
+    @media (min-width: 768px) {
+      gap: calc(var(--spacing) * 4);
+    }
+  }
+
+  .hero-title-container {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing) * 2);
+    align-items: center;
+
+    h1 {
+      font-size: 1.875rem;
+      font-weight: 600;
+      line-height: 1.1;
+      text-wrap-style: balance;
+      letter-spacing: var(--spacing-tighter);
+    }
+
+    @media (min-width: 768px) {
+      gap: calc(var(--spacing) * 4);
+
+      h1 {
+        font-size: 3rem;
+      }
+    }
+  }
+
+  .hero-content-container {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing) * 2);
+
+    .tagline {
+      max-width: 56rem;
+      font-size: 1.125rem;
+      text-wrap: balance;
+      line-height: 1.75rem;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: center;
+      padding-top: calc(var(--spacing) * 2);
+      gap: calc(var(--spacing) * 2);
+    }
+
+    @media (min-width: 768px) {
+      gap: calc(var(--spacing) * 4);
+    }
+  }
+
+  .hero[data-layout='media-top'],
+  .hero[data-layout='banner'] {
+    flex-direction: column-reverse;
+    gap: calc(var(--spacing) * 20);
+    padding-block-end: calc(var(--spacing) * 8);
+  }
+
+  .hero[data-layout='banner'] {
+    @media (min-width: 1024px) {
+      .hero-info {
+        width: 100%;
+        flex-direction: row;
+        gap: calc(var(--spacing) * 16);
+
+        .hero-title-container {
+          flex: 1;
+          align-items: flex-start;
+          text-align: left;
+
+          h1 {
+            text-wrap-style: pretty;
+          }
+        }
+
+        .hero-content-container {
+          flex: 1;
+          align-items: flex-start;
+          align-self: flex-end;
+          text-align: left;
+
+          .tagline {
+            text-wrap-style: pretty;
+          }
+        }
+      }
+    }
+  }
+
+  .hero[data-layout='media-left'],
+  .hero[data-layout='media-right'] {
+    flex-direction: column;
+
+    @media (min-width: 1024px) {
+      flex-direction: row;
+      gap: calc(var(--spacing) * 16);
+
+      .hero-info {
+        align-items: flex-start;
+
+        .hero-title-container {
+          align-items: flex-start;
+          text-align: left;
+        }
+
+        .hero-content-container {
+          align-items: flex-start;
+          text-align: left;
+        }
+      }
+    }
+  }
+
+  .hero[data-layout='media-left'] {
+    .hero-image {
+      order: 1;
+    }
+  }
+
+  .hero[data-layout='media-right'] {
+    .hero-image {
+      order: 0;
+    }
   }
 </style>

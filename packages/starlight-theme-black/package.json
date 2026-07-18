@@ -18,37 +18,18 @@
   "bugs": "https://github.com/adrian-ub/starlight-theme-black/issues",
   "exports": {
     ".": "./index.ts",
+    "./schema": "./schema.ts",
     "./styles/base": "./styles/base.css",
     "./styles/layers": "./styles/layers.css",
     "./styles/theme": "./styles/theme.css",
-    "./schema": "./schema.ts",
     "./components": "./user-components.ts",
-    "./overrides/ThemeSelect.astro": "./overrides/ThemeSelect.astro",
-    "./overrides/PageFrame.astro": "./overrides/PageFrame.astro",
-    "./overrides/Header.astro": "./overrides/Header.astro",
-    "./overrides/SiteTitle.astro": "./overrides/SiteTitle.astro",
-    "./overrides/Sidebar.astro": "./overrides/Sidebar.astro",
-    "./overrides/TwoColumnContent.astro": "./overrides/TwoColumnContent.astro",
-    "./overrides/ContentPanel.astro": "./overrides/ContentPanel.astro",
-    "./overrides/PageTitle.astro": "./overrides/PageTitle.astro",
-    "./overrides/MarkdownContent.astro": "./overrides/MarkdownContent.astro",
-    "./overrides/Hero.astro": "./overrides/Hero.astro",
-    "./overrides/Footer.astro": "./overrides/Footer.astro",
-    "./overrides/SocialIcons.astro": "./overrides/SocialIcons.astro",
-    "./overrides/Pagination.astro": "./overrides/Pagination.astro",
-    "./overrides/Search.astro": "./overrides/Search.astro",
-    "./overrides/TableOfContents.astro": "./overrides/TableOfContents.astro",
-    "./overrides/PageSidebar.astro": "./overrides/PageSidebar.astro",
+    "./overrides/*": "./overrides/*",
     "./package.json": "./package.json"
   },
   "engines": {
     "node": ">=22.12.0"
   },
   "peerDependencies": {
-    "@astrojs/starlight": ">=0.37"
-  },
-  "dependencies": {
-    "@pagefind/default-ui": "^1.4.0",
-    "marked": "^17.0.1"
+    "@astrojs/starlight": ">=0.41"
   }
 }
