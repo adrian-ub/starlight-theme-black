@@ -294,6 +294,10 @@
     }
   }
 
+  [data-has-sidebar] .header {
+    padding-inline-end: var(--sl-nav-pad-y);
+  }
+
   [data-has-sidebar][data-has-toc] .main-pane {
     max-width: calc(var(--spacing) * 160);
     padding-block: calc(var(--spacing) * 6);
