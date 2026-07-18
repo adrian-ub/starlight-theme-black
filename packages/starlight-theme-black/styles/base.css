@@ -11,7 +11,8 @@
 
     /* starlight color mappings */
     --sl-color-text-accent: var(--foreground);
-    --sl-color-banner-text: var(--foreground);
+    --sl-color-banner-text: var(--gray-7);
+    --sl-color-banner-bg: var(--foreground);
     --sl-color-bg: var(--background);
     --sl-color-bg-nav: var(--background);
     --sl-color-text: var(--foreground);
@@ -295,19 +296,19 @@
 
   [data-has-sidebar][data-has-toc] .main-pane {
     max-width: calc(var(--spacing) * 160);
-  }
-
-  .main-pane {
-    flex: 1;
     padding-block: calc(var(--spacing) * 6);
-    padding-inline: calc(var(--spacing) * 4);
-    min-width: calc(var(--spacing) * 0);
-    margin-inline: auto;
 
     @media (min-width: 64rem) {
       padding-block: calc(var(--spacing) * 8);
       padding-top: calc(calc(var(--spacing) * 4) + calc(var(--spacing) * 8));
     }
+  }
+
+  .main-pane {
+    flex: 1;
+    padding-inline: calc(var(--spacing) * 4);
+    min-width: calc(var(--spacing) * 0);
+    margin-inline: auto;
 
     @media (min-width: 48rem) {
       padding-inline: calc(var(--spacing) * 0);
