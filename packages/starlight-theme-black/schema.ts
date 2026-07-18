@@ -1,5 +1,5 @@
 import { z } from 'astro/zod'
-import { MarkdownActionsFrontmatterSchema } from './schemas/markdown-actions'
+import { MarkdownActionsSchema } from './schemas/markdown-actions'
 
 export const ExtendDocsSchema = z.object({
   hero: z
@@ -15,5 +15,5 @@ export const ExtendDocsSchema = z.object({
         .optional(),
     })
     .optional(),
-  showMarkdownActions: MarkdownActionsFrontmatterSchema.default(true),
+  showMarkdownActions: MarkdownActionsSchema.optional(),
 })
