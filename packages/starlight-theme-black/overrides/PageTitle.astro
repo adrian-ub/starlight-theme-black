@@ -2,6 +2,8 @@
 import { Icon } from '@astrojs/starlight/components'
 import { PAGE_TITLE_ID } from '../constants'
 import userConfig from 'virtual:starlight-theme-black-config'
+import { resolveMarkdownActions } from '../libs/config'
+import type { MarkdownActionsFrontmatter } from '../schemas/markdown-actions'
 
 const {
   entry: { data, body },
@@ -9,13 +11,14 @@ const {
 } = Astro.locals.starlightRoute
 
 const { title, description } = data
-const includeAIMenu = userConfig.docs?.includeAiUtilities ?? true
+
+const frontmatterConfig = (data as any).showMarkdownActions as MarkdownActionsFrontmatter | undefined
+const resolved = resolveMarkdownActions(userConfig.docs ?? {}, frontmatterConfig)
 
 const pageUrl = Astro.url.href
-const aiPromptTemplate = userConfig.docs.aiPrompt
-const aiPrompt = aiPromptTemplate.replace(/\{url\}/g, pageUrl)
+const aiPrompt = resolved.prompt.replace(/\{url\}/g, pageUrl)
 const encodedPrompt = encodeURIComponent(aiPrompt)
-const aiServices = userConfig.docs.aiServices
+const aiServices = resolved.services
 const copyButtonContent = `---\ntitle: ${title}\ndescription: ${description}\n---\n\n${body}`.trim()
 ---
 
@@ -25,7 +28,7 @@ const copyButtonContent = `---\ntitle: ${title}\ndescription: ${description}\n--
 
     <div class="docs-nav">
       {
-        includeAIMenu && (
+        resolved.enabled && (
           <div class="copy-page-group">
             <button class="copy-page-action" data-content={copyButtonContent}>
               <svg

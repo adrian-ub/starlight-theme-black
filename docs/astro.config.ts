@@ -36,7 +36,7 @@ export default defineConfig({
       sidebar: [
         {
           label: 'Start Here',
-          items: ['getting-started', 'customization', 'ai-utilities'],
+          items: ['getting-started', 'customization', 'markdown-actions'],
         },
         {
           label: 'Examples',

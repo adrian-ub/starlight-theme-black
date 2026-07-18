@@ -1,11 +1,6 @@
 import { z } from 'astro/zod'
 import { NavbarItemSchema } from '../schemas/navbar'
-
-const aiServiceSchema = z.object({
-  name: z.string(),
-  url: z.string(),
-  icon: z.string(),
-})
+import { MarkdownActionsServiceSchema } from '../schemas/markdown-actions'
 
 const defaultChatGPTIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M22.282 9.821a5.985 5.985 0 0 0-.516-4.91 6.046 6.046 0 0 0-6.51-2.9A6.065 6.065 0 0 0 4.981 4.18a5.985 5.985 0 0 0-3.998 2.9 6.046 6.046 0 0 0 .743 7.097 5.98 5.98 0 0 0 .51 4.911 6.051 6.051 0 0 0 6.515 2.9A5.985 5.985 0 0 0 13.26 24a6.056 6.056 0 0 0 5.772-4.206 5.99 5.99 0 0 0 3.997-2.9 6.056 6.056 0 0 0-.747-7.073zM13.26 22.43a4.476 4.476 0 0 1-2.876-1.04l.141-.081 4.779-2.758a.795.795 0 0 0 .392-.681v-6.737l2.02 1.168a.071.071 0 0 1 .038.052v5.583a4.504 4.504 0 0 1-4.494 4.494zM3.6 18.304a4.47 4.47 0 0 1-.535-3.014l.142.085 4.783 2.759a.771.771 0 0 0 .78 0l5.843-3.369v2.332a.08.08 0 0 1-.033.062L9.74 19.95a4.5 4.5 0 0 1-6.14-1.646zM2.34 7.896a4.485 4.485 0 0 1 2.366-1.973V11.6a.766.766 0 0 0 .388.676l5.815 3.355-2.02 1.168a.076.076 0 0 1-.071 0l-4.83-2.786A4.504 4.504 0 0 1 2.34 7.872zm16.597 3.855-5.833-3.387L15.119 7.2a.076.076 0 0 1 .071 0l4.83 2.791a4.494 4.494 0 0 1-.676 8.105v-5.678a.79.79 0 0 0-.407-.667zm2.01-3.023-.141-.085-4.774-2.782a.776.776 0 0 0-.785 0L9.409 9.23V6.897a.066.066 0 0 1 .028-.061l4.83-2.787a4.5 4.5 0 0 1 6.68 4.66zm-12.64 4.135-2.02-1.164a.08.08 0 0 1-.038-.057V6.075a4.5 4.5 0 0 1 7.375-3.453l-.142.08-4.778 2.758a.795.795 0 0 0-.393.681zm1.097-2.365 2.602-1.5 2.607 1.5v2.999l-2.597 1.5-2.607-1.5Z" fill="currentColor"/></svg>`
 
@@ -13,40 +8,46 @@ const defaultClaudeIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 
 
 const defaultV0Icon = `<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 147 70"><path d="M56 50.203V14h14v46.156C70 65.593 65.593 70 60.156 70c-2.596 0-5.158-1-7-2.843L0 14h19.797L56 50.203ZM147 56h-14V23.953L100.953 56H133v14H96.687C85.814 70 77 61.186 77 50.312V14h14v32.156L123.156 14H91V0h36.312C138.186 0 147 8.814 147 19.688V56Z"/></svg>`
 
-const defaultSciraIcon = `<svg viewBox="0 0 910 934" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M647.664 197.775C569.13 189.049 525.5 145.419 516.774 66.8849C508.048 145.419 464.418 189.049 385.884 197.775C464.418 206.501 508.048 250.131 516.774 328.665C525.5 250.131 569.13 206.501 647.664 197.775Z" fill="currentColor" stroke="currentColor" stroke-width="8" stroke-linejoin="round"/><path d="M516.774 304.217C510.299 275.491 498.208 252.087 480.335 234.214C462.462 216.341 439.058 204.251 410.333 197.775C439.059 191.3 462.462 179.209 480.335 161.336C498.208 143.463 510.299 120.06 516.774 91.334C523.25 120.059 535.34 143.463 553.213 161.336C571.086 179.209 594.49 191.3 623.216 197.775C594.49 204.251 571.086 216.341 553.213 234.214C535.34 252.087 523.25 275.491 516.774 304.217Z" fill="currentColor" stroke="currentColor" stroke-width="8" stroke-linejoin="round"/><path d="M857.5 508.116C763.259 497.644 710.903 445.288 700.432 351.047C689.961 445.288 637.605 497.644 543.364 508.116C637.605 518.587 689.961 570.943 700.432 665.184C710.903 570.943 763.259 518.587 857.5 508.116Z" stroke="currentColor" stroke-width="20" stroke-linejoin="round"/><path d="M700.432 615.957C691.848 589.05 678.575 566.357 660.383 548.165C642.191 529.973 619.499 516.7 592.593 508.116C619.499 499.533 642.191 486.258 660.383 468.066C678.575 449.874 691.848 427.181 700.432 400.274C709.015 427.181 722.289 449.874 740.481 468.066C758.673 486.258 781.365 499.533 808.271 508.116C781.365 516.7 758.673 529.973 740.481 548.165C722.289 566.357 709.015 589.05 700.432 615.957Z" stroke="currentColor" stroke-width="20" stroke-linejoin="round"/><path d="M889.949 121.237C831.049 114.692 798.326 81.9698 791.782 23.0692C785.237 81.9698 752.515 114.692 693.614 121.237C752.515 127.781 785.237 160.504 791.782 219.404C798.326 160.504 831.049 127.781 889.949 121.237Z" fill="currentColor" stroke="currentColor" stroke-width="8" stroke-linejoin="round"/><path d="M791.782 196.795C786.697 176.937 777.869 160.567 765.16 147.858C752.452 135.15 736.082 126.322 716.226 121.237C736.082 116.152 752.452 107.324 765.16 94.6152C777.869 81.9065 786.697 65.5368 791.782 45.6797C796.867 65.5367 805.695 81.9066 818.403 94.6152C831.112 107.324 847.481 116.152 867.338 121.237C847.481 126.322 831.112 135.15 818.403 147.858C805.694 160.567 796.867 176.937 791.782 196.795Z" fill="currentColor" stroke="currentColor" stroke-width="8" stroke-linejoin="round"/><path d="M760.632 764.337C720.719 814.616 669.835 855.1 611.872 882.692C553.91 910.285 490.404 924.255 426.213 923.533C362.022 922.812 298.846 907.419 241.518 878.531C184.19 849.643 134.228 808.026 95.4548 756.863C56.6815 705.7 30.1238 646.346 17.8129 583.343C5.50207 520.339 7.76433 455.354 24.4266 393.359C41.089 331.364 71.7099 274.001 113.947 225.658C156.184 177.315 208.919 139.273 268.117 114.442" stroke="currentColor" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+const defaultSciraIcon = `<svg viewBox="0 0 910 934" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M647.664 197.775C569.13 189.049 525.5 145.419 516.774 66.8849C508.048 145.419 464.418 189.049 385.884 197.775C464.418 206.501 508.048 250.131 516.774 328.665C525.5 250.131 569.13 206.501 647.664 197.775Z" fill="currentColor" stroke="currentColor" stroke-width="8" stroke-linejoin="round"/><path d="M516.774 304.217C510.299 275.491 498.208 252.087 480.335 234.214C462.462 216.341 439.058 204.251 410.333 197.775C439.059 191.3 462.462 179.209 480.335 161.336C498.208 143.463 510.299 120.06 516.774 91.334C523.25 120.059 535.34 143.463 553.213 161.336C571.086 179.209 594.49 191.3 623.216 197.775C594.49 204.251 571.086 216.341 553.213 234.214C535.34 252.087 523.25 275.491 516.774 304.217Z" fill="currentColor" stroke="currentColor" stroke-width="8" stroke-linejoin="round"/><path d="M857.5 508.116C763.259 497.644 710.903 445.288 700.432 351.047C689.961 445.288 637.605 497.644 543.364 508.116C637.605 518.587 689.961 570.943 700.432 665.184C710.903 570.943 763.259 518.587 857.5 508.116Z" stroke="currentColor" stroke-width="20" stroke-linejoin="round"/><path d="M700.432 615.957C691.848 589.05 678.575 566.357 660.383 548.165C642.191 529.973 619.499 516.7 592.593 508.116C619.499 499.533 642.191 486.258 660.383 468.066C678.575 449.874 691.848 427.181 700.432 400.274C709.015 427.181 722.289 449.874 740.481 468.066C758.673 486.258 781.365 499.533 808.271 508.116C781.365 516.7 758.673 529.973 740.481 548.165C722.289 566.357 709.015 589.05 700.432 615.957Z" stroke="currentColor" stroke-width="20" stroke-linejoin="round"/><path d="M889.949 121.237C831.049 114.692 798.326 81.9698 791.782 23.0692C785.237 81.9698 752.515 114.692 693.614 121.237C752.515 127.781 785.237 160.504 791.782 219.404C798.326 160.504 831.049 127.781 889.949 121.237Z" fill="currentColor" stroke="currentColor" stroke-width="8" stroke-linejoin="round"/><path d="M791.782 196.795C786.697 176.937 777.869 160.567 765.334 148.031C752.799 135.496 736.429 126.668 716.571 121.583C736.43 116.498 752.799 107.67 765.334 95.1344C777.869 82.5988 786.697 66.2286 791.782 46.3711C796.867 66.2294 805.696 82.5988 818.231 95.1344C830.767 107.67 847.137 116.498 866.995 121.583C847.137 126.668 830.767 135.496 818.231 148.031C805.696 160.567 796.867 176.937 791.782 196.795Z" stroke="currentColor" stroke-width="20" stroke-linejoin="round"/><path d="M201.687 197.775C123.152 189.049 79.5227 145.419 70.7971 66.8849C62.0711 145.419 18.4415 189.049 -60.0922 197.775C18.4415 206.501 62.0711 250.131 70.7971 328.665C79.5227 250.131 123.152 206.501 201.687 197.775Z" fill="currentColor" stroke="currentColor" stroke-width="8" stroke-linejoin="round"/><path d="M70.7971 304.217C64.3223 275.491 52.2312 252.087 34.3585 234.214C16.4858 216.341 -6.9182 204.251 -35.6431 197.775C-6.9182 191.3 16.4858 179.209 34.3585 161.336C52.2312 143.463 64.3223 120.06 70.7971 91.334C77.2728 120.059 89.3628 143.463 107.236 161.336C125.109 179.209 148.513 191.3 177.239 197.775C148.513 204.251 125.109 216.341 107.236 234.214C89.3628 252.087 77.2728 275.491 70.7971 304.217Z" fill="currentColor" stroke="currentColor" stroke-width="8" stroke-linejoin="round"/><path d="M52.0781 508.116C-42.1632 497.644 -94.5192 445.288 -104.991 351.047C-115.462 445.288 -167.818 497.644 -262.059 508.116C-167.818 518.587 -115.462 570.943 -104.991 665.184C-94.5192 570.943 -42.1632 518.587 52.0781 508.116Z" stroke="currentColor" stroke-width="20" stroke-linejoin="round"/><path d="M-104.991 615.957C-113.574 589.05 -126.847 566.357 -145.039 548.165C-163.231 529.973 -185.923 516.7 -212.829 508.116C-185.923 499.533 -163.231 486.258 -145.039 468.066C-126.847 449.874 -113.574 427.181 -104.991 400.274C-96.4079 427.181 -83.1336 449.874 -64.9416 468.066C-46.7497 486.258 -24.0577 499.533 2.84825 508.116C-24.0577 516.7 -46.7497 529.973 -64.9416 548.165C-83.1336 566.357 -96.4079 589.05 -104.991 615.957Z" stroke="currentColor" stroke-width="20" stroke-linejoin="round"/><path d="M17.2091 121.237C-41.6909 114.692 -74.4137 81.9698 -80.9581 23.0692C-87.5026 81.9698 -120.225 114.692 -179.126 121.237C-120.225 127.781 -87.5026 160.504 -80.9581 219.404C-74.4137 160.504 -41.6909 127.781 17.2091 121.237Z" fill="currentColor" stroke="currentColor" stroke-width="8" stroke-linejoin="round"/><path d="M-80.9581 196.795C-86.0431 176.937 -94.8714 160.567 -107.406 148.031C-119.942 135.496 -136.312 126.668 -156.17 121.583C-136.311 116.498 -119.942 107.67 -107.406 95.1344C-94.8714 82.5988 -86.0431 66.2286 -80.9581 46.3711C-75.8732 66.2294 -67.0448 82.5988 -54.5093 95.1344C-41.9736 107.67 -25.6035 116.498 -5.74549 121.583C-25.6035 126.668 -41.9736 135.496 -54.5093 148.031C-67.0448 160.567 -75.8732 176.937 -80.9581 196.795Z" stroke="currentColor" stroke-width="20" stroke-linejoin="round"/></svg>`
+
+const defaultServices: MarkdownActionsService[] = [
+  { name: 'Open in v0', url: 'https://v0.dev?q={prompt}', icon: defaultV0Icon },
+  { name: 'Open in ChatGPT', url: 'https://chatgpt.com?q={prompt}', icon: defaultChatGPTIcon },
+  { name: 'Open in Claude', url: 'https://claude.ai/new?q={prompt}', icon: defaultClaudeIcon },
+  { name: 'Open in Scira', url: 'https://scira.ai/?q={prompt}', icon: defaultSciraIcon },
+]
 
 export const StarlightThemeBlackConfigSchema = z.object({
   navLinks: NavbarItemSchema.array().optional(),
   docs: z
     .object({
-      includeAiUtilities: z.boolean().default(true),
-      aiPrompt: z
-        .string()
-        .default(
-          'I\'m looking at this documentation: {url}.\nHelp me understand how to use it. Be ready to explain concepts, give examples, or help debug based on it.',
-        ),
-      aiServices: z
-        .array(aiServiceSchema)
-        .default([
-          { name: 'Open in v0', url: 'https://v0.dev?q={prompt}', icon: defaultV0Icon },
-          { name: 'Open in ChatGPT', url: 'https://chatgpt.com?q={prompt}', icon: defaultChatGPTIcon },
-          { name: 'Open in Claude', url: 'https://claude.ai/new?q={prompt}', icon: defaultClaudeIcon },
-          { name: 'Open in Scira', url: 'https://scira.ai/?q={prompt}', icon: defaultSciraIcon },
-        ]),
+      showMarkdownActions: z.union([z.boolean(), z.object({
+        prompt: z.string().optional(),
+        services: z.array(MarkdownActionsServiceSchema).optional(),
+      })]).default(true),
     })
     .optional()
-    .default({
-      includeAiUtilities: true,
-      aiPrompt:
-        'I\'m looking at this documentation: {url}.\nHelp me understand how to use it. Be ready to explain concepts, give examples, or help debug based on it.',
-      aiServices: [
-        { name: 'Open in v0', url: 'https://v0.dev?q={prompt}', icon: defaultV0Icon },
-        { name: 'Open in ChatGPT', url: 'https://chatgpt.com?q={prompt}', icon: defaultChatGPTIcon },
-        { name: 'Open in Claude', url: 'https://claude.ai/new?q={prompt}', icon: defaultClaudeIcon },
-        { name: 'Open in Scira', url: 'https://scira.ai/?q={prompt}', icon: defaultSciraIcon },
-      ],
-    }),
+    .default({ showMarkdownActions: true }),
 })
+
+export function resolveMarkdownActions(
+  globalConfig: typeof StarlightThemeBlackConfigSchema.shape.docs._type,
+  frontmatter: MarkdownActionsFrontmatter | undefined,
+) {
+  if (frontmatter === false) return { enabled: false, prompt: '', services: [] }
+  if (globalConfig.showMarkdownActions === false) return { enabled: false, prompt: '', services: [] }
+
+  const global = typeof globalConfig.showMarkdownActions === 'object' ? globalConfig.showMarkdownActions : {}
+  const local = typeof frontmatter === 'object' ? frontmatter : {}
+
+  const prompt = local.prompt ?? global.prompt ?? 'I\'m looking at this documentation: {url}.\nHelp me understand how to use it. Be ready to explain concepts, give examples, or help debug based on it.'
+  const allServices = global.services ?? defaultServices
+  const filterNames = local.services
+
+  const services = filterNames ? allServices.filter(s => filterNames.includes(s.name)) : allServices
+
+  return { enabled: true, prompt, services }
+}
 
 export type StarlightThemeBlackUserConfig = z.input<typeof StarlightThemeBlackConfigSchema>
 export type StarlightThemeBlackConfig = z.output<typeof StarlightThemeBlackConfigSchema>
