@@ -1,37 +1,70 @@
 ---
 import type { StarlightRouteData } from '@astrojs/starlight/route-data'
+import userConfig from 'virtual:starlight-theme-black-config'
+import { Icon } from '@astrojs/starlight/components'
+import SidebarRestorePoint from '@astrojs/starlight/components/SidebarRestorePoint.astro'
+
+type SidebarEntry = StarlightRouteData['sidebar'][number]
+
+function flattenSidebar(sidebar: SidebarEntry[]): SidebarEntry[] {
+  return sidebar.flatMap((entry) => (entry.type === 'group' ? flattenSidebar(entry.entries) : entry))
+}
 
 interface Props {
   sublist: StarlightRouteData['sidebar']
   nested?: boolean
 }
 
-const { sublist } = Astro.props
+const { sublist, nested } = Astro.props
+const useDropdowns = userConfig.sidebar.useDropdowns
 ---
 
-{
-  sublist.map((entry, index) =>
-    entry.type === 'link' ? (
-      <a
-        href={entry.href}
-        aria-current={entry.isCurrent && 'page'}
-        class:list={['entry-link', entry.attrs.class]}
-        {...entry.attrs}
-      >
-        <span class="entry-link-inner" />
-        {entry.label}
-        {entry.badge && <span class="entry-badge" />}
-      </a>
-    ) : (
-      <div class={`container-sidebar-entry ${index === 0 && !Astro.props.nested ? ' first' : ''}`}>
-        <div class="entry-title">{entry.label}</div>
-        <div class="container-group-link">
-          <Astro.self sublist={entry.entries} nested />
-        </div>
-      </div>
-    ),
-  )
-}
+<ul class:list={{ 'top-level': !nested }}>
+  {
+    sublist.map((entry, index) =>
+      entry.type === 'link' ? (
+        <li>
+          <a
+            href={entry.href}
+            aria-current={entry.isCurrent && 'page'}
+            class:list={['entry-link', entry.attrs.class]}
+            {...entry.attrs}
+          >
+            <span class="entry-link-inner" />
+            {entry.label}
+            {entry.badge && <span class="entry-badge" />}
+          </a>
+        </li>
+      ) : useDropdowns ? (
+        <li>
+          <details
+            open={
+              flattenSidebar(entry.entries).some((i: SidebarEntry) => i.type === 'link' && i.isCurrent) ||
+              !entry.collapsed
+            }
+            class={`container-sidebar-entry ${index === 0 && !nested ? ' first' : ''}`}
+          >
+            <summary class="entry-title">
+              <span>{entry.label}</span>
+              <Icon name="right-caret" class="caret" size="1rem" />
+            </summary>
+            <SidebarRestorePoint />
+            <div class="accordion-content">
+              <Astro.self sublist={entry.entries} nested />
+            </div>
+          </details>
+        </li>
+      ) : (
+        <li class={`container-sidebar-entry ${index === 0 && !nested ? ' first' : ''}`}>
+          <div class="entry-title">{entry.label}</div>
+          <div class="container-group-link">
+            <Astro.self sublist={entry.entries} nested />
+          </div>
+        </li>
+      ),
+    )
+  }
+</ul>
 
 <style>
   .container-sidebar-entry {
@@ -48,6 +81,8 @@ const { sublist } = Astro.props
   }
 
   .entry-title {
+    all: unset;
+    box-sizing: border-box;
     color: var(--muted-foreground);
     font-weight: 500;
     font-size: 0.75rem;
@@ -57,15 +92,40 @@ const { sublist } = Astro.props
     display: flex;
     align-items: center;
     height: calc(var(--spacing) * 8);
+    justify-content: space-between;
+    user-select: none;
+    list-style: none;
+    width: 100%;
+  }
+
+  details > .entry-title {
+    cursor: pointer;
+  }
+
+  .caret {
+    transition: transform 0.2s ease-in-out;
+    flex-shrink: 0;
+  }
+
+  :global([dir='rtl']) .caret {
+    transform: rotateZ(180deg);
+  }
+
+  details[open] > .entry-title > .caret {
+    transform: rotateZ(90deg);
+  }
+
+  .accordion-content {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing) * 1);
+    min-width: 0;
   }
 
   .container-group-link {
-    font-size: 0.875rem;
-    line-height: 1.25rem;
-    gap: 2px;
-    grid-auto-rows: max-content;
-    grid-auto-flow: row;
-    display: grid;
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing) * 1);
     width: 100%;
   }
 
@@ -83,8 +143,12 @@ const { sublist } = Astro.props
     display: flex;
     position: relative;
     color: var(--foreground);
+    transition:
+      background-color 0.15s ease,
+      color 0.15s ease;
   }
 
+  .entry-link:hover,
   .entry-link[aria-current='page'] {
     color: var(--sidebar-accent-foreground);
     font-weight: 500;

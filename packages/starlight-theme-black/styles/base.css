@@ -140,13 +140,32 @@
     padding: 0;
     padding-left: calc(var(--spacing) * 2.5);
     width: calc(var(--spacing) * 56);
-    overflow-x: hidden;
     overflow: auto;
+    overflow-x: hidden;
     min-height: 0;
     gap: calc(var(--spacing) * 2);
     flex-direction: column;
     scrollbar-width: none;
     display: flex;
+
+    & ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: calc(var(--spacing) * 1);
+    }
+
+    & li {
+      overflow-wrap: anywhere;
+    }
+
+    & summary::marker,
+    & summary::-webkit-details-marker {
+      display: none;
+    }
 
     --_scroll-fade-size-t: var(--scroll-fade-t-size, var(--scroll-fade-size, min(12%, calc(var(--spacing) * 10))));
     --_scroll-fade-size-b: var(--scroll-fade-b-size, var(--scroll-fade-size, min(12%, calc(var(--spacing) * 10))));
@@ -357,6 +376,10 @@
   /* global typography refinements */
   * :not(pre) > code {
     border-color: var(--border);
+  }
+
+  html {
+    scrollbar-gutter: stable;
   }
 
   body {

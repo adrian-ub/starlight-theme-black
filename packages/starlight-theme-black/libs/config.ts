@@ -60,6 +60,12 @@ export const StarlightThemeBlackConfigSchema = z.object({
     .default({
       showMarkdownActions: true,
     }),
+
+  sidebar: z
+    .object({
+      useDropdowns: z.boolean().default(false),
+    })
+    .default({ useDropdowns: false }),
 })
 
 export type StarlightThemeBlackUserConfig = z.input<
