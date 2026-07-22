@@ -1,7 +1,7 @@
 {
   "name": "starlight-theme-black",
   "type": "module",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Starlight theme inspired by Shadcn docs",
   "author": "adrian-ub",
   "license": "MIT",
