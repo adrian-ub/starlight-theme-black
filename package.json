@@ -24,22 +24,26 @@
     "docs:build": "nr -C docs build"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^6.7.1",
-    "@astrojs/starlight": "^0.41.3",
-    "astro": "^7.0.9",
-    "astro-eslint-parser": "^1.2.2",
-    "bumpp": "^10.3.2",
-    "eslint": "^9.39.2",
-    "eslint-plugin-astro": "^1.5.0",
-    "eslint-plugin-format": "^1.1.0",
-    "lint-staged": "^16.2.7",
-    "prettier-plugin-astro": "^0.14.1",
-    "simple-git-hooks": "^2.13.1"
+    "@antfu/eslint-config": "^10.0.0",
+    "@astrojs/starlight": "^0.43.1",
+    "astro": "^7.4.13",
+    "astro-eslint-parser": "^3.2.0",
+    "bumpp": "^12.3.0",
+    "eslint": "^10.15.0",
+    "eslint-plugin-astro": "^3.2.1",
+    "eslint-plugin-format": "^2.0.1",
+    "lint-staged": "^17.6.1",
+    "prettier-plugin-astro": "^1.1.2",
+    "simple-git-hooks": "^2.14.0"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm i --frozen-lockfile --ignore-scripts --offline && npx lint-staged"
   },
   "lint-staged": {
     "*": "eslint --fix"
-  }
+  },
+  "workspaces": [
+    "docs",
+    "packages/*"
+  ]
 }
